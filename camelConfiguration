@@ -1,1 +1,215 @@
 
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0
+           http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
+
+    <camelContext streamCache="true" trace="true"
+                  id="entitlementsEventFlowContext"
+                  xmlns="http://camel.apache.org/schema/blueprint">
+
+        <route streamCache="true" id="dealPiplineEventFlowRoute"
+               errorHandlerRef="myDeadLetterErrorHandler">
+            <from uri="activemq:queue:{{dpStart.queue.name}}"/>
+            <multicast onPrepareRef="dealPipelineRulesProcessor">
+                <filter>
+                    <simple>${property[pushAndEmailNotification]}== "true"</simple>
+                    <to uri="activemq:queue:{{pushEmailNotification.queue.name}}"/>
+                </filter>
+                <filter>
+                    <simple>${property[entitlementFlow]}== "true"</simple>
+                    <to uri="activemq:queue:{{dpEntitlementRefreshFlow.queue.name}}"/>
+                </filter>
+                <filter>
+                    <simple>${property[auditTrailFlow]}== "true"</simple>
+                    <to uri="activemq:queue:{{dpAuditTrailFlow.queue.name}}"/>
+                </filter>
+                <filter>
+                    <simple>${property[dealCentre]}== "true"</simple>
+                    <to uri="activemq:queue:{{dpDealcentreflow.queue.name}}"/>
+                </filter>
+                <filter>
+                    <simple>${property[debtDomain]}== "true"</simple>
+                    <to uri="activemq:queue:{{prepareDebtDomainFlow.queue.name}}"/>
+                </filter>
+                <filter>
+                <simple>${property[linkedDealNotification]}== "true"</simple>
+                <to uri="activemq:queue:{{linkedDealNotification.queue.name}}"/>
+                </filter>
+                <filter>
+                    <simple>${property[stellaFlow]}== "true"</simple>
+                    <to uri="activemq:queue:{{dpStellaFlow.queue.name}}"/>
+                </filter>
+                <filter>
+                    <simple>${property[onTrackFlow]}== "true"</simple>
+                    <to uri="activemq:queue:{{dpOnTrackFlow.queue.name}}"/>
+                </filter>
+                <filter>
+                    <simple>${property[publicDealPushNotification]}== "true"</simple>
+                    <to uri="activemq:queue:{{publicDealPushNotification.queue.name}}"/>
+                </filter>
+
+                <filter>
+                    <simple>${property[publicDealEmailNotification]}== "true"</simple>
+                    <to uri="activemq:queue:{{publicDealEmailNotification.queue.name}}"/>
+                </filter>
+
+                <filter>
+                    <simple>${property[cmsAmmendFlow]}== "true"</simple>
+                    <to uri="activemq:queue:{{cmsAmmendFlow.queue.name}}"/>
+                </filter>
+            </multicast>
+        </route>
+
+
+        <route streamCache="true" id="cmsAmmendFlowFlowRoute" errorHandlerRef="myDeadLetterErrorHandler">
+            <from uri="activemq:queue:{{cmsAmmendFlow.queue.name}}"/>
+            <process ref="dealPropogateCMSFlowProcessor"/>
+        </route>
+
+        <route streamCache="true" id="entitlementEventFlowRoute" errorHandlerRef="myDeadLetterErrorHandler">
+            <from uri="activemq:queue:{{dpEntitlementRefreshFlow.queue.name}}"/>
+            <process ref="dealPipelineEntitlementFlowProcessor"/>
+        </route>
+
+        <route streamCache="true" id="leadsManagementUpdateFlowRoute" errorHandlerRef="myDeadLetterErrorHandler">
+            <from uri="activemq:queue:{{leadsManagementUpdateFlow.queue.name}}"/>
+            <process ref="leadsManagementUpdateFlowProcessor"/>
+        </route>
+
+        <route streamCache="true" id="dealCentreEventFlowRoute"
+               errorHandlerRef="myDeadLetterErrorHandler">
+            <from uri="activemq:queue:{{dpDealcentreflow.queue.name}}"/>
+            <log logName="dealCentreEventFlowLog"
+                 loggingLevel="ERROR"
+                 message=">>>>DealCentre Camel Flow Queue Exception"/>
+            <process ref="dealCentreDataFlowProcessor"/>
+        </route>
+
+
+        <route streamCache="true" id="prepareDebtDomainEventFlowRoute"
+               errorHandlerRef="myDeadLetterErrorHandler">
+
+            <from uri="activemq:queue:{{prepareDebtDomainFlow.queue.name}}"/>
+            <onCompletion>
+                <log message=">>>>>>After Execution of Prepare Debt Domain Camel Flow"
+                     loggingLevel="INFO"/>
+                <to uri="activemq:queue:{{publishDebtDomainFlow.queue.name}}"/>
+            </onCompletion>
+            <log logName="prepareDebtDomainEventFlowLog"
+                 loggingLevel="ERROR"
+                 message=">>>>>Prepare Debt Domain Flow Queue Exception"/>
+            <process ref="prepareDebtDomainFlowProcessor"/>
+        </route>
+
+        <route streamCache="true" id="publishDebtDomainEventFlowRoute"
+               errorHandlerRef="myDeadLetterErrorHandler">
+            <from uri="activemq:queue:{{publishDebtDomainFlow.queue.name}}"/>
+            <onCompletion>
+                <to uri="activemq:queue:{{processDebtDomainFlow.queue.name}}"/>
+            </onCompletion>
+            <log logName="publishDebtDomainEventFlowLog"
+                 loggingLevel="ERROR"
+                 message=">>>>>Publish Debt Domain Flow Queue Exception"/>
+            <process ref="publishDebtDomainFlowProcessor"/>
+        </route>
+
+        <route streamCache="true" id="processDebtDomainEventFlowRoute"
+               errorHandlerRef="myDeadLetterErrorHandler">
+            <from uri="activemq:queue:{{processDebtDomainFlow.queue.name}}"/>
+            <log logName="processDebtDomainEventFlowLog"
+                 loggingLevel="ERROR"
+                 message=">>>>>Process Debt Domain Flow Queue Exception"/>
+            <process ref="processDebtDomainFlowProcessor"/>
+        </route>
+
+
+
+
+        <route streamCache="true" id="auditTrailEventFlowRoute"
+               errorHandlerRef="myDeadLetterErrorHandler">
+            <from uri="activemq:queue:{{dpAuditTrailFlow.queue.name}}"/>
+            <log logName="auditTrailEventFlowLog"
+                 loggingLevel="ERROR"
+                 message=">>>>>Audit Trail Event Flow Queue Exception"/>
+            <process ref="auditTrailFlowProcessor"/>
+        </route>
+
+        <route streamCache="true" id="stellaEventFlowRoute"
+               errorHandlerRef="myDeadLetterErrorHandler">
+            <from uri="activemq:queue:{{dpStellaFlow.queue.name}}"/>
+            <log logName="stellaEventFlowLog"
+                 loggingLevel="ERROR"
+                 message=">>>>>Stella Event Flow Queue Exception"/>
+            <process ref="stellaFlowProcessor"/>
+        </route>
+
+        <route streamCache="true" id="OnTrackEventFlowRoute"
+               errorHandlerRef="myDeadLetterErrorHandler">
+            <from uri="activemq:queue:{{dpOnTrackFlow.queue.name}}"/>
+            <log logName="onTrackEventFlowLog"
+                 loggingLevel="ERROR"
+                 message=">>>>>On Track Event Flow Queue Exception"/>
+            <process ref="onTrackFlowProcessor"/>
+        </route>
+
+
+
+        <route streamCache="true" id="pushAndEmailNotificationRoute"
+               errorHandlerRef="myDeadLetterErrorHandler">
+            <from uri="activemq:queue:{{pushEmailNotification.queue.name}}"/>
+            <log logName="pushNotificationEventLog"
+                 loggingLevel="ERROR"
+                 message=">>>>>Push Notification Flow Exception"/>
+            <process ref="pushAndEmailNotificationProcessor"/>
+        </route>
+
+        <route streamCache="true" id="linkedDealAndRetagDealNotificationRoute"
+               errorHandlerRef="myDeadLetterErrorHandler">
+            <from uri="activemq:queue:{{linkedDealNotification.queue.name}}"/>
+            <log logName="linkedDealNotificationEventLog"
+                 loggingLevel="ERROR"
+                 message=">>>>>Linked Deal Notification Flow Exception"/>
+            <process ref="dealLinkageNotificationFlowProcessor"/>
+        </route>
+
+        <route streamCache="true" id="publicDealPushNotificationEventRoute"
+               errorHandlerRef="myDeadLetterErrorHandler">
+            <from uri="activemq:queue:{{publicDealPushNotification.queue.name}}"/>
+            <log logName="publicDealPushNotificationEventLog"
+                 loggingLevel="ERROR"
+                 message=">>>>>Public Deal Push Notification Flow Exception"/>
+            <process ref="publicDealPushNotificationProcessor"/>
+        </route>
+
+        <route streamCache="true" id="publicDealEmailNotificationEventRoute"
+               errorHandlerRef="myDeadLetterErrorHandler">
+            <from uri="activemq:queue:{{publicDealEmailNotification.queue.name}}"/>
+            <log logName="publicDealEmailNotificationEventLog"
+                 loggingLevel="ERROR"
+                 message=">>>>>Public Deal Email Notification Flow Exception"/>
+            <process ref="publicDealMailNotificationProcessor"/>
+        </route>
+
+
+    </camelContext>
+
+    <bean id="myDeadLetterErrorHandler" class="org.apache.camel.builder.DeadLetterChannelBuilder">
+        <property name="deadLetterUri" value="activemq:queue:{{error.queue.name}}"/>
+        <property name="redeliveryPolicy" ref="myRedeliveryPolicyConfig"/>
+        <property name="onRedelivery" ref="errorProcessor"/>
+        <property name="useOriginalMessage" value="true"/>
+    </bean>
+
+    <bean id="myRedeliveryPolicyConfig" class="org.apache.camel.processor.RedeliveryPolicy">
+        <property name="maximumRedeliveries" value="2"/>
+        <property name="redeliveryDelay" value="120000"/>
+        <property name="logStackTrace" value="true"/>
+    </bean>
+
+
+
+</blueprint>
+
+
