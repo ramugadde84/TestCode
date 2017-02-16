@@ -1,11 +1,3 @@
-/**
- * js bootstrap datatable object
- * This objects wraps the bootstrap data table
- * 
- * @author rx389m
- */
-
-
 var table = null;
 var table2 = null;
 
