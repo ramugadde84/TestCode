@@ -14,3 +14,4 @@ $('input:checked').each(function() {
 	selected.push($(this).attr('id'));
 });
 
+
