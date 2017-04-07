@@ -1,3 +1,6 @@
++++++++++++
+Grep Commands
+++++++++++++
 Count Number of Occurences:grep -c "Error" logfile.txt
 Using Regular Expressions: egrep 'Error|Exception' logfile.txt
 Case Insensitive Search: grep -i Error logfile
@@ -5,3 +8,22 @@ Searching patterns in zip file: zgrep -i Error *.gz
 Search Whole word: grep -w ERROR logfile.txt
 Display File Names which contains Pattern: grep -l ERROR *.log
 Recursive search: grep -lra "Error" logfile.txt
+
+++++++++++++++++++
+Host Name find commands
+++++++++++++++++++
+tild/hostname -i
+ping command: ping trading_system
+IP Address find by using nslookup: tild/test nslookup
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++
+VI Editor Commands
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Opening the file in readonly mode: vim -R config.xml
+Save any change from readonly mode : ":wq!"
+
+:w(save file any time)
+:wq(most used to save data and quit)
+:q!(Quit witout saving)
+
+
