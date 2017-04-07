@@ -4,3 +4,4 @@ Case Insensitive Search: grep -i Error logfile
 Searching patterns in zip file: zgrep -i Error *.gz
 Search Whole word: grep -w ERROR logfile.txt
 Display File Names which contains Pattern: grep -l ERROR *.log
+Recursive search: grep -lra "Error" logfile.txt
