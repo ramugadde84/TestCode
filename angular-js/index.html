@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html data-ng-app="profileInformation">
+
+<head>
+  <link data-require="bootstrap@*" data-semver="4.0.5" rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" />
+  <script data-require="bootstrap@*" data-semver="4.0.5" src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.5/js/bootstrap.min.js"></script>
+  <script data-require="angular.js" data-semver="1.4.0-beta.4" src="https://code.angularjs.org/1.4.0-beta.4/angular.js"></script>
+  <script data-require="angular-route@*" data-semver="1.4.0-beta.4" 
+    src="https://code.angularjs.org/1.4.0-beta.4/angular-route.js"></script>
+  <link rel="stylesheet" href="http://bootswatch.com/slate/bootstrap.min.css" />
+  <script src="script.js"></script>
+</head>
+<body>
+  <div class="container-fluid">>
+    <div class="row">
+      <div class="col-xs-12">
+        <h1>
+             <span class="glyphicon glyphicon-headphones hidden-xs"></span>
+             Music Artists
+          </h1>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12">
+        <div data-ng-view></div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
