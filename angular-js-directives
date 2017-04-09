@@ -1,0 +1,4 @@
+ng-app
+ng-controller
+ng-bind-html
+ngSanitize
