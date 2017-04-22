@@ -1,0 +1,29 @@
+select count(*) from (select 
+  min(ce.id_obj)
+from biz_dp_deal_master DM 
+ inner join biz_dp_master MS
+   on (MS.ID_OBJ = DM.ID_OBJ_MSTR 
+   and DM.X_TXN_ID = MS.X_LATEST_TXN_ID
+   AND DM.X_TXN_TYP  IN ('0001','0002'))
+inner join biz_DP_CLIENT_DEAL_EXECUTION CE
+   on (CE.id_obj_mstr=DM.id_obj_mstr
+      and ce.x_type='Y') 
+inner join biz_dp_child ch
+   ON(CE.ID_OBJ_MSTR = CH.ID_OBJ_MSTR 
+   AND CH.X_LATEST_TXN_ID = CE.X_TXN_ID 
+   AND CE.ID_OBJ_CHILD = CH.ID_OBJ
+   AND CE.x_txn_typ <> '0003')
+group by ce.id_obj_mstr having count(ce.id_obj_mstr)>1);
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++==
+
+select count(*) from(select min(be.id_obj) from biz_DP_CLIENT_DEAL_EXECUTION be
+         inner join biz_dp_child ch
+         --on be.id_obj_mstr='20170422100644052'
+         on be.id_obj_mstr=ch.id_obj_mstr
+         and be.id_obj_child = ch.id_obj
+         and be.x_txn_typ <> '0003'
+         and be.x_txn_id = ch.x_latest_txn_id
+         and be.x_type = 'Y'
+        group by be.id_obj_mstr having count(be.id_obj_mstr)>1); 
+        
