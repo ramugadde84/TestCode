@@ -1,0 +1,108 @@
+SPOOL PROC_PRM_DEAL_REG.LOG
+SET DEFINE OFF
+SET ECHO ON
+SET SERVEROUTPUT ON;
+SET TIMING ON;
+WHENEVER SQLERROR EXIT FAILURE ROLLBACK
+
+declare
+  START_TIME DATE;
+  END_TIME DATE;
+  V_TRACE  VARCHAR2(500);
+  V_COUNT NUMBER;
+CURSOR C_PMYREG  IS 
+
+select dm.id_obj as dealIdObj,
+       ch.id_obj as childIdObj, 
+       ms.id_obj as masterIdObj,
+       ce.id_obj as clientDEIdObj, 
+       ce.x_prmy_dl_ctry as primaryDealCtr,
+       dm.id_obj_mstr as dealId,
+        CASE
+        WHEN  ce.x_prmy_dl_reg is null
+        THEN  
+         (select x_code_long_desc from biz_code_picklist_val 
+          where id_code='DLPL0035' 
+          and x_code_val= (select x_prnt_code_val from biz_code_picklist where id_code='DLPL0037' 
+          and x_code_val=ce.x_prmy_dl_ctry))
+        END AS  prmyDRG
+from biz_dp_deal_master DM 
+   inner join biz_dp_master MS
+   on (MS.ID_OBJ = DM.ID_OBJ_MSTR 
+   and DM.X_TXN_ID = MS.X_LATEST_TXN_ID
+   AND DM.X_TXN_TYP  IN ('0001','0002'))
+   inner join biz_DP_CLIENT_DEAL_EXECUTION CE
+   on (CE.id_obj_mstr=DM.id_obj_mstr 
+   and ce.x_prmy_dl_ctry is not null
+   and CE.x_prmy_dl_reg is null)
+   inner join biz_dp_child ch
+   ON(CE.ID_OBJ_MSTR = CH.ID_OBJ_MSTR 
+   AND CH.X_LATEST_TXN_ID = CE.X_TXN_ID 
+   AND CE.ID_OBJ_CHILD = CH.ID_OBJ
+   AND CE.x_txn_typ <> '0003')
+   where dm.x_prod_grp in('CF','CM');
+         
+TYPE T_PMYREG IS TABLE OF C_PMYREG%ROWTYPE INDEX BY PLS_INTEGER;
+V_PMYREG T_PMYREG;
+
+BEGIN
+OPEN C_PMYREG;
+    SELECT SYSDATE INTO START_TIME FROM DUAL;
+    DBMS_OUTPUT.PUT_LINE('P_PMY_REG_UPD start time = '||START_TIME);
+LOOP
+  FETCH C_PMYREG BULK COLLECT INTO V_PMYREG LIMIT 10000;
+  EXIT WHEN V_PMYREG.COUNT = 0;
+  V_COUNT := V_PMYREG.COUNT;
+  DBMS_OUTPUT.PUT_LINE('V_COUNT = '||V_COUNT);
+  
+  BEGIN
+    FOR I IN 1..V_PMYREG.COUNT --SAVE EXCEPTIONS
+    LOOP
+    
+    BEGIN
+    --updating deal master.
+    UPDATE biz_dp_deal_master dli
+       SET dli.d_upd = SYSDATE,dli.d_creat=sysdate
+    WHERE dli.id_obj=V_PMYREG(I).dealIdObj;
+
+    --Updating master
+    update biz_dp_master masterIdObj
+      set masterIdObj.d_upd = SYSDATE 
+    where masterIdObj.id_obj= V_PMYREG(I).masterIdObj; 
+
+    --update client deal execution.
+    update biz_DP_CLIENT_DEAL_EXECUTION cde
+      set cde.x_prmy_dl_reg = V_PMYREG(I).prmyDRG,
+      cde.d_upd = SYSDATE,cde.d_creat = sysdate 
+    where  cde.id_obj=V_PMYREG(I).clientDEIdObj; 
+
+    --updating child
+    UPDATE BIZ_DP_CHILD CH
+       set CH.D_UPD = SYSDATE,ch.d_creat=sysdate
+    WHERE CH.ID_OBJ = V_PMYREG(I).childIdObj;
+    
+     --updating dealcentre feed
+     update biz_dp_Deal_centre_feed feed
+        set feed.x_prmy_dl_reg = V_PMYREG(I).prmyDRG,
+        feed.d_upd = SYSDATE
+     where feed.id_obj_mstr= V_PMYREG(I).masterIdObj;
+      
+    COMMIT;
+        
+    EXCEPTION 
+    WHEN OTHERS THEN
+    DBMS_OUTPUT.PUT_LINE('ERROR OCCURED WHILE UPDATING primary deal region: ' || SQLERRM||' '||SQLCODE);
+    PKG_AUDIT_LOG.P_EXCEPTION('PKG_PMY_REGG_UPDD','PKG_UPD_REG',TRUNC(SYSDATE),SQLCODE,SQLERRM,USER);
+  END;
+  END LOOP;    
+  END;
+  END LOOP;
+  SELECT SYSDATE INTO END_TIME FROM DUAL;
+  DBMS_OUTPUT.PUT_LINE('P_PMY_REGG_UPD = '||END_TIME);
+      
+  PKG_AUDIT_LOG.P_AUDIT_LOG('PKG_PMY_REGG_UPDD','PKG_UPD_REG',TRUNC(SYSDATE),'UPDATE',V_COUNT,START_TIME,END_TIME,USER);
+END;
+
+
+/
+SPOOL OFF;
