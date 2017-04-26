@@ -1,0 +1,67 @@
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++=
+CloseableHttpClient:
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.protocol.HTTP;
+
+
+
+  CloseableHttpClient httpClient = HttpClients.createDefault();
+
+  //Posting the Data to the server.
+  HttpPost httpPostRequest = new HttpPost(path);
+
+  httpPostRequest.setHeader("User-Agent", HTTP.USER_AGENT);
+
+  //Setting the Content type and sending the request json value.
+  StringEntity stringEntity = new StringEntity(jsonValue);
+  stringEntity.setContentType("application/json");
+
+  //Setting entity to the Post request object.
+  httpPostRequest.setEntity(stringEntity);
+
+  //Server Post call will be happen here.
+  HttpResponse response = httpClient.execute(httpPostRequest);
+
+  BufferedReader br = new BufferedReader(
+          new InputStreamReader((response.getEntity().getContent())));
+
+  String output;
+  StringBuilder stringBuilder = new StringBuilder("");
+  while ((output = br.readLine()) != null) {
+      stringBuilder.append(output);
+  }
+  br.close();
+
+  return stringBuilder.toString();
+
+            
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++=
+HttpClientBuilder
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.protocol.HTTP;
+
+HttpClient client = HttpClientBuilder.create().build();
+HttpGet request = new HttpGet(serviceEndPoint);
+
+request.addHeader("User-Agent", HTTP.USER_AGENT);
+try {
+    log.info("Before execution");
+    client.execute(request);
+} catch (IOException exception) {
+    log.info("CMS exception message=" + exception.getMessage(), exception);
+    new CamelApplicationFlowException(new RuntimeException());
+}
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
