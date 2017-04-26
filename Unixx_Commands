@@ -26,4 +26,6 @@ Save any change from readonly mode : ":wq!"
 :wq(most used to save data and quit)
 :q!(Quit witout saving)
 
-
++++++++++++++++++++++++++++++++
+nohup ./one.sh &
++++++++++++++++++++++++++++++
