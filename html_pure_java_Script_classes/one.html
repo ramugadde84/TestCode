@@ -1,0 +1,54 @@
+<!-- ctrl+space -->
+<html>
+<head>
+	<title>The Sample Application</title>
+<script type="text/javascript">
+  //a,b
+  var a;
+  var b=2;
+  var c="test";
+  var d="test1";
+  
+  //press F12 and put debug point
+  /*if(c===d) {
+  	alert("c and d values are equal");
+  } else{
+  	alert("c and d values are not equal");
+  }
+  */
+  console.log(a); //undefined 
+  console.log(c);
+  console.log(b);
+  console.log(d);
+
+  //Loops
+  for(var i = 0; i<10;i++) {
+  	console.log(i);
+  }
+
+  var day = prompt("Enter the value");
+  switch(day) {
+  	case "Monday":
+  	  console.log("Entered day is>>"+day);
+      break;
+    default:
+       console.log("Invalid entry");
+       break;
+   }
+
+   //java script there is == and ===
+   console.log(3=="3"); //true
+   console.log("3"==="3"); //true Excat Equals Operator
+
+   //Arrays Declaration
+   var a=["a","b","c"];
+   console.log(a); //[a,b,c]
+   //push is used to push the values to the Array.
+   a.push("d");//[a,b,c,d]
+   a.push("e");//[a,b,c,d,e]
+  
+</script>
+</head>
+<body>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!-- 1)First Step d(drive) - create one folder - htmlApplications
+2)create one.html file
+3)copy that code and save it
+4)run as chrome or mozilla or IE.
+
+ -->
+ <!-- This is  the indicator to the browser we are using html -->
+ <!DOCTYPE html>
+ <html>
+ <head>
+   <style type="text/css">
+   p {
+   	background-color: #FFFF00;
+   }
+   </style>	 
+   <title>The Example Application</title>
+   <script type="text/javascript">
+      //Array Declaration
+      var arrayList=["one","two","three","four"];
+       for(var i=0;i<arrayList.length;i++){
+      	console.log(i);
+      	console.log(arrayList[i]);
+      }
+
+       //Array Concatenation
+       var array1=["sunday","monday"];
+ 
+       var array2=["Tuesday","Wednesday"];
+
+       //concat key word is used to concatenate two arrays.
+       console.log(array1.concat(array2));
+
+       
+       //splice() and slice() //one-0,two-1,three-2
+       var array3=["one","two","three"];
+       console.log(array3.splice(1,2)); //two,three
+
+       console.log(array3);
+
+       //slice() one-0,two-1,three-2,four-3 2<3&& 3<3
+       var array4=["one","two","three","four"];
+       console.log(array4.slice(2,3)); //2
+       console.log(array4);
+
+       //Exception handling also we can do in java script
+       try{
+        //we have to perform the operations in this try block
+        //If any thing wrong we have to throw the error message
+        console.log("try block");
+         
+        var a = 20/0; //Infinity
+        
+        //Exact Equals
+        if(a === Infinity){
+        	throw "/ by zero is not possible it will return infinite value";
+        }
+       }catch(e){
+        //Error message will be catch by catch block 
+        console.log(e);
+       }finally{
+        //finally we have to close the 
+        console.log("finally block");
+       }
+
+     //Function
+     function htmlToJavaScriptRender() {
+       alert(document.getElementById("one").innerText);
+     }  
+
+ </script>
+ </head>
+ <body onload="htmlToJavaScriptRender()"> 
+    <!--Paragraph Tag -->
+    <!-- html(Enter the values) -> javaScript(Take the values) 
+        -> java script will pass that values to Service(java)-->
+    <p id="one"> First Paragraph </p> <!-- target -->
+    <p id="two"> Second paragrapth </p>
+    <p id="three"> Third paragraph </p>
+ </body>
+ </html>
