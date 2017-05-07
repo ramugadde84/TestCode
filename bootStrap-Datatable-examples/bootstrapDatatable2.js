@@ -124,7 +124,7 @@ $.fn.dataTable.Api.register('columnsArray()', function() {
  * @param getAjaxParamsMethod - pass additional params to the ajax call
  * @param responseHandler - method called after data is returned from server
  **/
-eis.BootstrapDatatable = function(elementID, noMatchesMsg, rowSelectionEnabled, getAjaxParamsMethod, responseHandler, tableOptions) {
+BootstrapDatatable = function(elementID, noMatchesMsg, rowSelectionEnabled, getAjaxParamsMethod, responseHandler, tableOptions) {
 	table2 = this;
 	var _GL = {
 		selectedRow: null,
