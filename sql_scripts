@@ -1,3 +1,8 @@
+++++++++++++++++++++++++++++
+Finding No of columns in the table
++++++++++++++++++++++++++++
+select count(*) from user_tab_columns where table_name = 'xxxx';
+
 select count(*) from (select 
   min(ce.id_obj)
 from biz_dp_deal_master DM 
