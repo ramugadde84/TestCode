@@ -3,6 +3,16 @@ Finding No of columns in the table
 +++++++++++++++++++++++++++
 select count(*) from user_tab_columns where table_name = 'xxxx';
 
++++++++++++++++++++++++++++++++++++++=
+Find the type and length of the column in the table
++++++++++++++++++++++++++++++++++++
+select data_type,data_length from all_tab_columns 
+where table_name='UUU' and column_name='UUU';
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++
+PLSQL
++++++++++++++++++++++++++++++++++++++++++++++++++++
 select count(*) from (select 
   min(ce.id_obj)
 from biz_dp_deal_master DM 
