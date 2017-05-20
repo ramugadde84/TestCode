@@ -47,3 +47,39 @@ select count(*) from(select min(be.id_obj) from biz_DP_CLIENT_DEAL_EXECUTION be
          and be.x_type = 'Y'
         group by be.id_obj_mstr having count(be.id_obj_mstr)>1); 
         
+        
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Trigger:
+create or replace TRIGGER TRG_RMWB_DP_FEE_TYPE_AUDIT
+  AFTER INSERT OR UPDATE ON RMWB_DP_FEE_TYPE
+    FOR EACH ROW
+       DECLARE v_rmwb_action VARCHAR2(20);
+BEGIN
+    IF UPDATING AND :NEW.IS_DELETE = 'N' THEN
+        v_rmwb_action :='UPDATE';
+    ELSIF INSERTING THEN
+        v_rmwb_action :='ADD';
+    END IF;
+
+    IF :NEW.IS_DELETE = 'Y' THEN
+        v_rmwb_action :='DELETE';
+    END IF;
+
+	INSERT INTO RMWB_DP_FEE_TYPE_AUDIT VALUES(
+	  RMWB_DP_FEE_TYPE_AUDIT_SEQ.NEXTVAL,
+	 :NEW.PERIODIC_FEE_ID,
+	 :NEW.PERIODIC_FEE_TYPE,
+	 :OLD.PERIODIC_FEE_TYPE,
+	 :NEW.PERIODIC_FEE_GROUP,
+	 :OLD.PERIODIC_FEE_GROUP,
+     :NEW.IS_ACTIVE,
+     :OLD.IS_ACTIVE,
+     :NEW.UPDATED_BY,
+     CURRENT_TIMESTAMP,
+     V_RMWB_ACTION
+	);
+
+END;
+
+
+        
