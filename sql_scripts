@@ -9,6 +9,8 @@ Find the type and length of the column in the table
 select data_type,data_length from all_tab_columns 
 where table_name='UUU' and column_name='UUU';
 
+Grant:
+GRANT SELECT ON table_name TO schema_name;
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++
 PLSQL
