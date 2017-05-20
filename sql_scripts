@@ -12,6 +12,9 @@ where table_name='UUU' and column_name='UUU';
 Grant:
 GRANT SELECT ON table_name TO schema_name;
 
+Synonym:
+CREATE OR REPLACE SYNONYM "OCCSS_DTS_DEV_04"."D_DEAL_ENTITLEMENTS" FOR "OCCSS_ENTMT_DEV_04"."D_DEAL_ENTITLEMENTS";
+
 ++++++++++++++++++++++++++++++++++++++++++++++++++
 PLSQL
 +++++++++++++++++++++++++++++++++++++++++++++++++++
