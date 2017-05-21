@@ -1,3 +1,8 @@
+Sequence:
+SELECT *
+  FROM user_sequences
+ WHERE sequence_name = '<sequence_name>';
+
 ++++++++++++++++++++++++++++
 Finding No of columns in the table
 +++++++++++++++++++++++++++
