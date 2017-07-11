@@ -14,10 +14,22 @@ Find the type and length of the column in the table
 select data_type,data_length from all_tab_columns 
 where table_name='UUU' and column_name='UUU';
 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Check whether the colum exist in the table
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Select count(*) 
+    from user_tab_cols
+    where column_name = 'X_DEAL_NAME'
+      and table_name = 'BIZ_DP_DEAL_MASTER';
+
++++++++++++++++++++++++++++
 Grant:
++++++++++++++++++++++++++++++++
 GRANT SELECT ON table_name TO schema_name;
 
+++++++++++++++++++++++++++++++++++++++
 Synonym:
++++++++++++++++++++++++++++++++++++++++
 CREATE OR REPLACE SYNONYM "OCCSS_DTS_DEV_04"."D_DEAL_ENTITLEMENTS" FOR "OCCSS_ENTMT_DEV_04"."D_DEAL_ENTITLEMENTS";
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++
