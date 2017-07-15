@@ -1,0 +1,4 @@
+1)Modal window is not closing when click close button why because page is reloading to handle this i used setTimeOut in java script
+2)When i am handling Boot Strap Data table to delete the record from Grid i sent value in Long format but in UI may be they will 
+add typeOf only for string
+3)
