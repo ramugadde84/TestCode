@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm orm_2_0.xsd"
+	version="2.0">
+	<named-query name="findByBatchFileType">
+		<query>
+			select b from BatchFileType b where b.fileName=:fileType
+		</query>
+	</named-query>
+
+	<named-query name="findIssuerByDropzonePath">
+		<query>
+			select i from IssuerConfiguration i where
+			i.dropzonePath=:dropzonePath
+		</query>
+	</named-query>
+
+	<named-query name="getIssuersByAuthType">
+		<query>
+			select i from IssuerConfiguration i where
+			i.authenticationType=:authenticationType
+			and
+			(i.disableCredentialAfterLogin is NULL OR
+			i.disableCredentialAfterLogin=0)
+		</query>
+	</named-query>
+
+	<named-query name="getIssuerByIisn">
+		<query>
+			select i from IssuerConfiguration i where i.iisn=:iisn
+		</query>
+	</named-query>
+	<named-query name="getCustomerByUserName">
+		<query>
+			select c from Customer c where c.userName=:userName
+		</query>
+	</named-query>
+
+	<named-query name="getIdbyArn">
+		<query>
+			select i from Arn i where i.arn=:arn
+		</query>
+	</named-query>
+	<named-query name="getExistingBatchFileHistory">
+		<query>
+			select b from BatchFileHistory b
+			where
+			b.batchFileName=:batchFileName
+		</query>
+	</named-query>
+	<named-query name="getIisnbyBin">
+		<query>
+			select i from IisnBin i where i.iisn=:iisn and i.bin=:bin and
+			i.binType='R'
+		</query>
+	</named-query>
+	<named-query name="findPaymentInstrumentByPanAndCustId">
+		<query>
+			select p from PaymentInstrument p join fetch p.customer join
+			fetch p.arn
+			where p.encryptedPan=:encryptedPan and
+			p.customer.issuerCustomerId=:issuerCustomerId
+		</query>
+	</named-query>
+	<named-query name="findIssuerByIid">
+		<query>
+			select i from IssuerConfiguration i where i.iid=:iid
+		</query>
+	</named-query>
+
+	<named-query name="getTokenbin">
+		<query>
+			select tbm from TokenBinMapping tbm where
+			tbm.iisnBin.bin=:realBin
+		</query>
+	</named-query>
+
+	<named-query name="getPanDetails">
+		<query>
+			select pi from PaymentInstrument pi where pi.arn.arn=:arn
+		</query>
+	</named-query>
+
+
+	<named-query name="findCustomerByIssuerCustomerId">
+		<query>
+			select c from Customer c where
+			c.issuerCustomerId=:issuerCustomerId
+		</query>
+	</named-query>
+
+	<named-query name="checkTokenRequestorIdArn">
+		<query>
+			select ptra from PermittedTokenRequestorArn ptra where
+			ptra.arn.id=:arnId and
+			ptra.permittedTokenRequestor.id=:tokenRequestorId
+			and ptra.ciid=:ciid
+			and ptra.active=:active
+		</query>
+	</named-query>
+
+	<named-query name="getIssuersByIisn">
+		<query>
+			select i from IssuerConfiguration i where i.iisn=:iisn
+		</query>
+	</named-query>
+	
+	<named-query name="getTokenRequestorByNetworkTrId">
+		<query>
+			select t from TokenRequestorConfiguration t where
+			t.networkTokenRequestId=:networkTrId
+		</query>
+	</named-query>
+
+
+	<named-query name="getTokenRequestor">
+		<query>
+			select t from PermittedTokenRequestor t where
+			t.networkTokenRequestorId=:trId
+		</query>
+	</named-query>
+
+	<named-query name="getArnDetails">
+		<query>
+			select a from Arn a where
+			a.arn=:arn
+		</query>
+	</named-query>
+
+	<named-query name="checkToken">
+		<query>
+			select c from Token c where c.encryptedPanToken=:encryptedToken
+		</query>
+	</named-query>
+
+	<!-- For Lock or Unlock of Customer Account use case-30 -->
+	<named-query name="updateLockUnlockCustomerAccount">
+		<query>
+			update Customer SET
+			accountLocked=:accountLocked,accountLockedReasonCode=:lockReasonCode
+			where
+			userName=:userName and issuerCustomerId=:issuerCustomerId
+		</query>
+	</named-query>
+
+	<!-- For Lock or Unlock of customer Account first fetching issuer customer 
+		Id and user name to compare with input batch file data and then only processing 
+		will done -->
+	<named-query name="lockUnlockCustomerAccountSelect">
+		<query>
+			select c from Customer c
+			where
+			c.issuerCustomerId=:issuerCustomerId
+			and c.userName=:userName
+		</query>
+	</named-query>
+	<!-- To retrieve list tokens using arn -->
+	<named-query name="getTokensForDeactivationByArn">
+		<query>
+			select t from Token t join t.permittedTokenRequestorArnsTokens
+			ptrat
+			join ptrat.permittedTokenRequestorArn ptra join ptra.arn a where
+			a.arn=:arn and t.active=1
+		</query>
+	</named-query>
+	<!-- To retrieve list tokens using panHash and expiry month year -->
+	<named-query name="getTokensForDeactivationByPaymentInstrument">
+		<query>
+			select t from Token t join t.permittedTokenRequestorArnsTokens
+			ptrat
+			join ptrat.permittedTokenRequestorArn ptra join ptra.arn a join
+			a.paymentInstruments pi
+			where pi.panHash=:panHash and
+			pi.expiryMonthYear=:expiryMonthYear and
+			t.active=1
+		</query>
+	</named-query>
+	<!-- To deactivate given tokens -->
+	<named-query name="deactivateToken">
+		<query>
+			update Token t SET t.active=0 where t.id=:id
+		</query>
+	</named-query>
+	<named-query name="fetchTokenExpirationTime">
+		<query>
+			select p from PanBin p where p.realBin=:realBin
+		</query>
+	</named-query>
+
+	<named-query name="getPanByArn">
+		<query>
+			select p from PaymentInstrument p join fetch p.arn where
+			p.arn.arn=:arn
+		</query>
+	</named-query>
+
+	<named-query name="deactivatePermittedTokenRequestorArn">
+		<query>
+			update PermittedTokenRequestorArn p SET p.active=0 where
+			p.id=:id
+		</query>
+	</named-query>
+	<named-query name="getListOfActivePaymentInstrument">
+		<query>
+			select p from PaymentInstrument p where p.arn.id =:arnId and
+			p.isActive=1
+		</query>
+	</named-query>
+
+	<!-- Added as part of Auth app changes. -->
+	<named-query name="getPermittedTokenRequestorArnWithCiid">
+		<query>
+			select p from PermittedTokenRequestorArn p
+			join p.arn a join p.permittedTokenRequestor pt
+			where a.arn=:arn and
+			pt.networkTokenRequestorId=:trId
+			and p.ciid=:ciid and p.active=:active
+		</query>
+	</named-query>
+	<named-query name="getPermittedTokenRequestorArnWithoutCiid">
+		<query>
+			select p from PermittedTokenRequestorArn p
+			join p.arn a join p.permittedTokenRequestor pt
+			where a.arn=:arn and
+			pt.networkTokenRequestorId=:trId
+			and p.ciid IS NULL and
+			p.active=:active
+		</query>
+	</named-query>
+	<named-query name="getTokensWithCiid">
+		<query>
+			select t from Token t
+			join t.permittedTokenRequestorArnsTokens
+			pat join pat.permittedTokenRequestorArn p
+			join
+			p.permittedTokenRequestor pt join p.arn a
+			where a.arn=:arn and pt.networkTokenRequestorId=:trId
+			and p.ciid=:ciid 
+		</query>
+	</named-query>
+	<named-query name="getTokensWithoutCiid">
+		<query>
+			select t from Token t
+			join t.permittedTokenRequestorArnsTokens
+			pat join pat.permittedTokenRequestorArn p
+			join
+			p.permittedTokenRequestor pt join p.arn a
+			where a.arn=:arn and pt.networkTokenRequestorId=:trId
+			and p.ciid IS NULL
+		</query>
+	</named-query>
+	<named-query name="getReportHistory">
+		<query>
+			select r from ReportHistory r where r.reportType=:reportType
+		</query>
+	</named-query>
+</entity-mappings>

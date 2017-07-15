@@ -1,0 +1,380 @@
+<beans:beans xmlns="http://www.springframework.org/schema/batch"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="
+           http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/batch 
+           http://www.springframework.org/schema/batch/spring-batch-3.0.xsd
+           http://www.springframework.org/schema/util 
+			http://www.springframework.org/schema/util/spring-util.xsd">
+
+	<beans:bean id="jobRepository"
+		class="org.springframework.batch.core.repository.support.JobRepositoryFactoryBean"
+		p:dataSource-ref="steDataSource" p:databaseType="db2"
+		p:transactionManager-ref="onlineTransactionManager"
+		p:isolationLevelForCreate="ISOLATION_DEFAULT" />
+
+	<beans:bean id="synchronousJobLauncher"
+		class="org.springframework.batch.core.launch.support.SimpleJobLauncher"
+		p:jobRepository-ref="jobRepository" />
+
+
+	<!-- Common stuff for most batches -->
+	<beans:bean id="outputFileMoveTasklet"
+		class="org.tch.ste.vault.service.internal.batch.OutputFileMoveTasklet"
+		scope="step">
+		<beans:constructor-arg value="#{jobParameters[tempOutputFileName]}" />
+		<beans:constructor-arg value="#{jobParameters[actualOutputFileName]}" />
+	</beans:bean>
+
+	<beans:bean id="headerTrailerValidationTasklet"
+		class="org.tch.ste.vault.service.internal.batch.HeaderTrailerValidationTasklet"
+		scope="step">
+		<beans:constructor-arg value="#{jobParameters[iisn]}" />
+		<beans:constructor-arg value="#{jobParameters[fileType]}" />
+	</beans:bean>
+
+
+	<!-- Payment Instrument Preload -->
+
+	<beans:bean id="paymentInstrumentPreloadService"
+		class="org.tch.ste.vault.service.internal.batch.preloadpaymentinstrument.PaymentInstrumentPreloadServiceImpl"
+		scope="step">
+	</beans:bean>
+
+	<beans:bean id="promotionListener"
+		class="org.springframework.batch.core.listener.ExecutionContextPromotionListener">
+		<beans:property name="keys"
+			value="headerTrailerValidationResult,iid,numProcessedRecords" />
+	</beans:bean>
+
+	<beans:bean id="preloadContentTokenizer"
+		class="org.springframework.batch.item.file.transform.FixedLengthTokenizer"
+		scope="step"
+		p:names="type,pan,expirationDate,issuerCustomerId,issuerAccountId,userName,password,token,nickName,arn"
+		p:columns="1-1,2-20,21-24,25-60,61-96,97-132,133-148,149-163,164-183,184-219"
+		p:strict="false">
+	</beans:bean>
+	<beans:bean id="trailerTokenizer"
+		class="org.springframework.batch.item.file.transform.FixedLengthTokenizer"
+		scope="step" p:names="type,numRecords" p:columns="1-1,2-13" p:strict="false">
+	</beans:bean>
+	<beans:bean id="invalidPaymentPreloadRecordTokenizer"
+		class="org.springframework.batch.item.file.transform.FixedLengthTokenizer"
+		scope="step" 
+		p:names="pan,expirationDate,issuerCustomerId,issuerAccountId,userName,password,token,nickName,arn"
+		p:columns="2-20,21-24,25-60,61-96,97-132,133-148,149-163,164-183,184-219" p:strict="false">
+	</beans:bean>
+	<beans:bean id="preloadContentFieldSetMapper"
+		class="org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper"
+		p:prototypeBeanName="preloadContentBean">
+	</beans:bean>
+	<beans:bean id="trailerFieldSetMapper"
+		class="org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper"
+		p:prototypeBeanName="trailerBean">
+	</beans:bean>
+	<beans:bean id="preloadContentBean"
+		class="org.tch.ste.vault.service.internal.batch.preloadpaymentinstrument.PaymentInstrumentPreloadContent"
+		scope="prototype">
+	</beans:bean>
+
+	<beans:bean id="trailerBean"
+		class="org.tch.ste.vault.domain.dto.BatchFileTrailer" scope="prototype">
+	</beans:bean>
+
+	<beans:bean id="preloadLineMapper"
+		class="org.springframework.batch.item.file.mapping.PatternMatchingCompositeLineMapper"
+		scope="step">
+		<beans:property name="tokenizers">
+			<util:map>
+				<beans:entry key="1*" value-ref="preloadContentTokenizer"></beans:entry>
+				<beans:entry key="2*" value-ref="trailerTokenizer"></beans:entry>
+				<beans:entry key="*" value-ref="invalidPaymentPreloadRecordTokenizer"></beans:entry>
+			</util:map>
+		</beans:property>
+		<beans:property name="fieldSetMappers">
+			<util:map>
+				<beans:entry key="1*" value-ref="preloadContentFieldSetMapper"></beans:entry>
+				<beans:entry key="2*" value-ref="trailerFieldSetMapper"></beans:entry>
+				<beans:entry key="*" value-ref="preloadContentFieldSetMapper"></beans:entry>
+			</util:map>
+		</beans:property>
+	</beans:bean>
+
+	<beans:bean id="preloadReader"
+		class="org.springframework.batch.item.file.FlatFileItemReader" scope="step"
+		p:resource="file:#{jobParameters[batchInputFileName]}"
+		p:lineMapper-ref="preloadLineMapper" p:linesToSkip="1" p:strict="false">
+	</beans:bean>
+
+	<beans:bean id="preloadProcessor"
+		class="org.tch.ste.vault.service.internal.batch.preloadpaymentinstrument.PaymentInstrumentPreloadBatchProcessor"
+		scope="step">
+	</beans:bean>
+
+
+	<beans:bean id="preloadWriter"
+		class="org.tch.ste.vault.service.internal.batch.preloadpaymentinstrument.PaymentInstrumentPreloadBatchWriter"
+		scope="step">
+		<beans:constructor-arg value="#{jobParameters[tempOutputFileName]}" />
+		<beans:constructor-arg value="#{jobParameters[iisn]}" />
+		<beans:constructor-arg ref="paymentInstrumentPreloadService" />
+	</beans:bean>
+
+	<beans:bean id="paymentInstrumentPreloadBatchHeaderTrailerWriter"
+		class="org.tch.ste.vault.service.internal.batch.preloadpaymentinstrument.PaymentInstrumentPreloadHeaderTrailerWriter"
+		scope="step">
+		<beans:constructor-arg value="#{jobParameters[tempOutputFileName]}"></beans:constructor-arg>
+		<beans:constructor-arg value="#{jobParameters[timeStamp]}" />
+	</beans:bean>
+
+
+	<job id="paymentInstrumentPreload">
+		<step id="validationStep" next="preloadStep">
+			<tasklet ref="headerTrailerValidationTasklet"
+				transaction-manager="onlineTransactionManager" />
+			<listeners>
+				<listener ref="promotionListener" />
+			</listeners>
+		</step>
+		<step id="preloadStep" next="confirmationStep">
+			<tasklet transaction-manager="onlineTransactionManager">
+				<chunk reader="preloadReader" processor="preloadProcessor"
+					writer="preloadWriter" commit-interval="1000">
+				</chunk>
+				<no-rollback-exception-classes>
+					<include class="java.lang.RuntimeException" />
+					<include class="java.lang.Error" />
+				</no-rollback-exception-classes>
+			</tasklet>
+			<listeners>
+				<listener ref="paymentInstrumentPreloadBatchHeaderTrailerWriter" />
+			</listeners>
+		</step>
+		<step id="confirmationStep">
+			<tasklet ref="outputFileMoveTasklet" transaction-manager="onlineTransactionManager" />
+		</step>
+	</job>
+
+	<!-- Password Expiry -->
+	<beans:bean id="passwordExpiryTrailerBatchWriter"
+		class="org.tch.ste.vault.service.internal.batch.passwordexpiry.PasswordExpiryTrailerWriter"
+		scope="step">
+		<beans:constructor-arg value="#{jobParameters[tempOutputFileName]}" />
+	</beans:bean>
+
+	<beans:bean id="passwordExpiryItemReader"
+		class="org.springframework.batch.item.database.JpaPagingItemReader"
+		scope="step">
+		<beans:property name="entityManagerFactory" ref="entityManagerFactory" />
+		<beans:property name="queryString"
+			value="select c from Customer c where c.lastPasswordChange &lt; :expiryDate" />
+		<beans:property name="parameterValues">
+			<util:map>
+				<beans:entry key="expiryDate" value="#{jobParameters[expiryDate]}" />
+			</util:map>
+		</beans:property>
+		<beans:property name="pageSize" value="100" />
+	</beans:bean>
+
+	<beans:bean id="passwordExpiryWriter"
+		class="org.tch.ste.vault.service.internal.batch.passwordexpiry.PasswordExpiryWriter"
+		scope="step">
+		<beans:constructor-arg value="#{jobParameters[tempOutputFileName]}" />
+	</beans:bean>
+
+	<job id="passwordExpiry">
+		<step id="expirePasswords" next="moveOutputFile">
+			<tasklet transaction-manager="onlineTransactionManager">
+				<chunk reader="passwordExpiryItemReader" writer="passwordExpiryWriter"
+					commit-interval="100">
+				</chunk>
+				<no-rollback-exception-classes>
+					<include class="java.lang.RuntimeException" />
+					<include class="java.lang.Error" />
+				</no-rollback-exception-classes>
+			</tasklet>
+			<listeners>
+				<listener ref="passwordExpiryTrailerBatchWriter" />
+			</listeners>
+		</step>
+		<step id="moveOutputFile">
+			<tasklet ref="outputFileMoveTasklet" transaction-manager="onlineTransactionManager">
+			</tasklet>
+		</step>
+	</job>
+
+
+	<!-- Detokenization Reports -->
+	
+	<!-- Listener -->
+	<beans:bean id="reportHistoryManagementListener"
+		class="org.tch.ste.infra.batch.ReportHistoryManagementListener" scope="job">
+		<beans:constructor-arg value="#{jobParameters[reportType]}" />
+		<beans:constructor-arg value="#{jobParameters[reportEndTime]}" />
+	</beans:bean>
+	
+	<job id="paymentTokenUsage">
+		<step id="fetchDetokenizationRequests" next="outputFile">
+			<tasklet transaction-manager="onlineTransactionManager">
+				<chunk reader="paymentTokenUsageItemReader" writer="paymentTokenUsageWriter"
+					commit-interval="100">
+				</chunk>
+				<no-rollback-exception-classes>
+					<include class="java.lang.RuntimeException" />
+					<include class="java.lang.Error" />
+				</no-rollback-exception-classes>
+			</tasklet>
+			<listeners>
+				<listener ref="paymentTokenUsageTrialerBatchWriter" />
+			</listeners>
+		</step>
+		<step id="outputFile">
+			<tasklet ref="outputFileMoveTasklet" transaction-manager="onlineTransactionManager">
+			</tasklet>
+		</step>
+		<listeners>
+			<listener ref="reportHistoryManagementListener" />
+		</listeners>
+	</job>
+	<beans:bean id="paymentTokenUsageTrialerBatchWriter"
+		class="org.tch.ste.vault.service.internal.batch.paymenttoken.PaymentTokenUsageTrailerWriter"
+		scope="step">
+		<beans:constructor-arg value="#{jobParameters[tempOutputFileName]}" />
+	</beans:bean>
+
+	<beans:bean id="paymentTokenUsageItemReader"
+		class="org.springframework.batch.item.database.JpaPagingItemReader"
+		scope="step">
+		<beans:property name="entityManagerFactory" ref="entityManagerFactory" />
+		<beans:property name="queryString"
+			value="select d from DetokenizationRequest d 
+			where d.requestDateTime &gt;= :reportStartTime and d.requestDateTime &lt; :reportEndTime" />
+		<beans:property name="parameterValues">
+			<util:map>
+				<beans:entry key="reportStartTime" value="#{jobParameters[reportStartTime]}" />
+				<beans:entry key="reportEndTime" value="#{jobParameters[reportEndTime]}" />
+			</util:map>
+		</beans:property>
+		<beans:property name="pageSize" value="100" />
+	</beans:bean>
+
+
+	<beans:bean id="paymentTokenUsageWriter"
+		class="org.tch.ste.vault.service.internal.batch.paymenttoken.PaymentTokenUsageWriter"
+		scope="step">
+		<beans:constructor-arg value="#{jobParameters[tempOutputFileName]}" />
+		<beans:constructor-arg value="#{jobParameters[timeStamp]}" />
+		<beans:constructor-arg value="#{jobParameters[iisn]}" />
+	</beans:bean>
+
+
+	<!-- LockUnlockCustomersAccount[USerStory-30.0] Batch Stuff starts from 
+		here customer service business logic is resided here. -->
+	<beans:bean id="lockUnlockCustomerService"
+		class="org.tch.ste.vault.service.internal.batch.customer.LockUnlockCustomerAccountServiceImpl"
+		scope="step">
+	</beans:bean>
+
+	<!-- Batch Input Records Tokenizer -->
+	<beans:bean id="lockUnlockCustomerAccountsContentTokenizer"
+		class="org.springframework.batch.item.file.transform.FixedLengthTokenizer"
+		scope="step" p:names="type,issuerCustomerId,userName,lockState"
+		p:columns="1-1,2-37,38-52,53-53" p:strict="false">
+	</beans:bean>
+
+	<!-- Bean Mapper to map Input records data to Input POJO -->
+	<beans:bean id="lockUnlockCustomerAccountsContentFieldSetMapper"
+		class="org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper"
+		p:prototypeBeanName="lockUnlockCustomerAccountsContentBean">
+	</beans:bean>
+
+	<!-- Lock or UnLock Customer Accounts POJO[For Input] -->
+	<beans:bean id="lockUnlockCustomerAccountsContentBean"
+		class="org.tch.ste.vault.service.internal.batch.customer.LockUnlockCustomerAccountContent"
+		scope="prototype">
+	</beans:bean>
+
+	<!-- Here Mapping of Records data to Object -->
+	
+	<beans:bean id="invalidAccountLockRecordTokenizer"
+		class="org.springframework.batch.item.file.transform.FixedLengthTokenizer"
+		scope="step" 
+		p:names="issuerCustomerId,userName,lockState"
+		p:columns="2-37,38-52,53-53" p:strict="false">
+	</beans:bean>
+	<beans:bean id="lockUnlockCustomerAccountsLineMapper"
+		class="org.springframework.batch.item.file.mapping.PatternMatchingCompositeLineMapper"
+		scope="step">
+		<beans:property name="tokenizers">
+			<util:map>
+				<beans:entry key="1*"
+					value-ref="lockUnlockCustomerAccountsContentTokenizer"></beans:entry>
+				<beans:entry key="2*" value-ref="trailerTokenizer"></beans:entry>
+				<beans:entry key="*" value-ref="invalidAccountLockRecordTokenizer"></beans:entry>
+			</util:map>
+		</beans:property>
+		<beans:property name="fieldSetMappers">
+			<util:map>
+				<beans:entry key="1*"
+					value-ref="lockUnlockCustomerAccountsContentFieldSetMapper"></beans:entry>
+				<beans:entry key="2*" value-ref="trailerFieldSetMapper"></beans:entry>
+				<beans:entry key="*" value-ref="lockUnlockCustomerAccountsContentFieldSetMapper"></beans:entry>
+			</util:map>
+		</beans:property>
+	</beans:bean>
+
+	<!-- Lock or Unlock customers account reader -->
+	<beans:bean id="lockUnlockCustomerAccountReader"
+		class="org.springframework.batch.item.file.FlatFileItemReader" scope="step"
+		p:resource="file:#{jobParameters[batchInputFileName]}"
+		p:lineMapper-ref="lockUnlockCustomerAccountsLineMapper" p:linesToSkip="1"
+		p:strict="false">
+	</beans:bean>
+
+	<beans:bean id="lockUnlockCustomerProcessor"
+		class="org.tch.ste.vault.service.internal.batch.customer.LockUnlockCustomerAccountBatchProcessor"
+		scope="step">
+	</beans:bean>
+
+	<!-- Lock or Unlock Customer Writer to float file. -->
+	<beans:bean id="lockUnlockCustomerAccountWriter"
+		class="org.tch.ste.vault.service.internal.batch.customer.LockUnlockCustomerAccountBatchWriter"
+		scope="step">
+		<beans:constructor-arg value="#{jobParameters[tempOutputFileName]}" />
+		<beans:constructor-arg value="#{jobParameters[iisn]}" />
+		<beans:constructor-arg ref="lockUnlockCustomerService" />
+	</beans:bean>
+
+	<beans:bean id="lockUnlockCustomerBatchHeaderTrailerWriter"
+		class="org.tch.ste.vault.service.internal.batch.customer.LockUnlockHeaderTrailerWriter"
+		scope="step">
+		<beans:constructor-arg value="#{jobParameters[tempOutputFileName]}"></beans:constructor-arg>
+		<beans:constructor-arg value="#{jobParameters[timeStamp]}" />
+	</beans:bean>
+
+	<!-- Lock or Unlock customers Job -->
+	<job id="lockUnlockCustomerAccounts">
+		<step id="lockUnlockCustomerAccountsValidationStep" next="lockUnlockCustomerAccountsPreloadStep">
+			<tasklet ref="headerTrailerValidationTasklet"
+				transaction-manager="onlineTransactionManager" />
+			<listeners>
+				<listener ref="promotionListener" />
+			</listeners>
+		</step>
+		<step id="lockUnlockCustomerAccountsPreloadStep" next="lockUnlockCustomerAccountsConfirmationStep">
+			<tasklet transaction-manager="onlineTransactionManager">
+				<chunk reader="lockUnlockCustomerAccountReader" processor="lockUnlockCustomerProcessor"
+					writer="lockUnlockCustomerAccountWriter" commit-interval="1000">
+				</chunk>
+			</tasklet>
+			<listeners>
+				<listener ref="lockUnlockCustomerBatchHeaderTrailerWriter" />
+			</listeners>
+		</step>
+		<step id="lockUnlockCustomerAccountsConfirmationStep">
+			<tasklet ref="outputFileMoveTasklet" transaction-manager="onlineTransactionManager" />
+		</step>
+	</job>
+</beans:beans>

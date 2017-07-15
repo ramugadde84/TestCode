@@ -1,0 +1,22 @@
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans	
+		http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+
+	<!-- Automatically detects all components in the base package -->
+	<context:component-scan base-package="org.tch">
+		<context:exclude-filter type="regex" expression="org.tch.ste.vault.web.*" />
+	</context:component-scan>
+	<import resource="spring_beans.xml" />
+	<import resource="spring_ds.xml" />
+	<import resource="spring_transaction.xml" />
+	<import resource="spring_dao.xml" />
+	<import resource="spring_service.xml" />
+	<import resource="spring_service_aspect.xml" />
+	<import resource="spring_batch.xml" />
+	<import resource="spring_scheduled_beans.xml"/>
+</beans>

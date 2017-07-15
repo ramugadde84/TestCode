@@ -1,0 +1,168 @@
+import org.gradle.plugins.ide.eclipse.model.SourceFolder 
+def springSecurityGroup='org.springframework.security'
+def springSecurityVersion='3.2.4.RELEASE'
+def springSecurityDeps=['spring-security-web','spring-security-config','spring-security-taglibs','spring-security-ldap']
+
+
+subprojects {
+	apply plugin: 'java'
+	apply plugin: 'eclipse'
+	apply plugin: 'eclipse-wtp'
+	
+	group='org.tch.ste'
+	version=1.0
+	
+	repositories {
+		mavenCentral()
+	}
+	
+	if(rootProject.hasProperty('targetEnv')) {
+		processResources.doFirst {
+			println 'Copying Resources for environment:'+targetEnv
+		}
+			
+		processResources {
+			include '**/META-INF/*'
+			include '**/*_'+targetEnv+'*.properties'
+			include '**/*.ldif'
+			
+			rename '(.*)_'+targetEnv+'(.*)', '$1$2'
+		}
+	}
+	
+	
+	dependencies {
+		// Dependent Libraries
+		def spring_deps=['spring-aop','spring-core','spring-beans','spring-context','spring-context-support','spring-jdbc','spring-tx','spring-orm','spring-oxm','spring-web','spring-webmvc']
+		def hibernate_deps=['hibernate-core','hibernate-entitymanager']
+		def jackson_deps=['jackson-core','jackson-databind']
+		def springVersion = '4.0.5.RELEASE'
+		def hibernateVersion = '4.2.7.Final'
+		def jacksonVersion = '2.3.0'
+		def springGroup='org.springframework'
+		def hibernateGroup='org.hibernate'
+		def jacksonGroup='com.fasterxml.jackson.core'
+		
+		configurations.all {
+
+			resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+				if (details.requested.group == springGroup) {
+					details.useVersion springVersion
+				}
+				else if (details.requested.group =='org.apache.httpcomponents') {
+					details.useVersion '4.0.1'
+				}
+			}
+		}
+		
+		// Other dependencies
+		compile 'log4j:log4j:1.2.17'
+		compile 'org.slf4j:slf4j-api:1.5.6'
+		compile 'org.slf4j:slf4j-log4j12:1.5.6'
+		compile 'javax.mail:mail:1.4.7'
+		compile 'aspectj:aspectjrt:1.5.4'
+		compile 'org.aspectj:aspectjweaver:1.7.4'
+		compile 'org.springframework.batch:spring-batch-core:3.0.0.RELEASE'
+		compile 'org.springframework.ws:spring-ws-core:2.1.4.RELEASE'
+        compile 'org.apache.commons:commons-lang3:3.3.2'
+        compile 'commons-dbcp:commons-dbcp:1.4'
+		compile 'commons-io:commons-io:2.4'
+        compile 'commons-validator:commons-validator:1.4.0'
+		compile 'commons-beanutils:commons-beanutils:1.9.1'
+		compile 'commons-codec:commons-codec:1.4'
+		compile 'org.apache.httpcomponents:httpclient:4.0.1'
+        compile 'commons-httpclient:commons-httpclient:3.1' // gmarwaha - do not remove
+
+            
+		
+		// Spring, Hibernate & CXF
+		spring_deps.each { compile group:springGroup, name:it, version:springVersion }
+		hibernate_deps.each { compile group:hibernateGroup, name:it, version:hibernateVersion }
+		jackson_deps.each { compile group:jacksonGroup, name:it, version:jacksonVersion }
+		
+		// Runtime Deps
+		runtime 'commons-fileupload:commons-fileupload:1.3.1'
+		runtime 'com.h2database:h2:1.3.175'
+		runtime 'mysql:mysql-connector-java:5.1.29'
+		runtime 'org.apache.directory.server:apacheds-all:1.5.5'
+		runtime files(new File(rootProject.projectDir,'lib/db2jcc.jar'))
+		runtime files(new File(rootProject.projectDir,'lib/db2jcc_license_cu.jar'))
+	}
+}
+
+project(':common:test') {
+	dependencies {
+		def springTestDependencies=['spring-test']
+		def springVersion = '4.0.2.RELEASE'
+		def springGroup='org.springframework'
+		
+		springSecurityDeps.each{compile group:springSecurityGroup,name:it,version:springSecurityVersion};
+		compile project(':common:domain')
+		compile 'com.mchange:c3p0:0.9.2.1'
+		compile 'junit:junit:4.6'
+		compile 'org.apache.tomcat:tomcat-catalina:7.0.52'
+		compile 'org.springframework.ws:spring-ws-test:2.1.4.RELEASE'
+		compile 'org.apache.tomcat:tomcat-jasper-el:7.0.5'
+		compile 'com.jayway.jsonpath:json-path:0.9.1'
+		compile 'com.github.tomakehurst:wiremock:1.46'
+
+		springTestDependencies.each { compile group:springGroup,name:it,version:springVersion }
+	}
+	
+}
+
+project(':common:infra') {
+	apply plugin: 'jacoco'
+	dependencies {
+		compile project(':common:domain')
+		springSecurityDeps.each{compile group:springSecurityGroup,name:it,version:springSecurityVersion};
+		testCompile project(':common:test')
+	}
+}
+
+[':apps:auth',':apps:admin',':apps:vault'].each {
+	project(it) {
+		apply plugin: 'jacoco'
+		apply plugin: 'war'
+
+		dependencies {
+			compile project(':common:domain'), project(':common:infra')
+			compile 'org.hibernate:hibernate-validator:4.2.0.Final'
+			springSecurityDeps.each{compile group:springSecurityGroup,name:it,version:springSecurityVersion}
+			
+			providedCompile 'org.apache.tomcat:tomcat-servlet-api:7.0.30'
+            providedCompile 'org.apache.tomcat:tomcat-jsp-api:7.0.30'
+			testCompile project(':common:test')
+			runtime 'mysql:mysql-connector-java:5.1.6'
+			
+			
+			
+			def jstlDeps=['javax.servlet.jsp.jstl:jstl-api:1.2','jstl:jstl:1.2']
+			jstlDeps.each{
+				runtime (it) {
+					exclude(group: 'javax.servlet', module:'servlet-api')
+					exclude(group: 'javax.servlet.jsp', module:'jsp-api')
+				}
+			}
+			
+			
+		}
+		
+		if(rootProject.hasProperty('targetEnv')) {
+			def includes=['css/**','images/**','js/**','views/**','web.xml','tags/**','messages_en.properties']
+			war {
+				includes.each{
+					include '**/'+it
+				}
+				include '**/spring/*'+targetEnv+'*.xml'
+				rename '(.*)_'+targetEnv+'(.*)', '$1$2'
+			}
+		}
+
+	}
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.2.1'
+}
+

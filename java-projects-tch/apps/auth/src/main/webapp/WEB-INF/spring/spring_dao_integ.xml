@@ -1,0 +1,41 @@
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans	
+		http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+
+	<bean id="issuerConfigurationDao" class="org.tch.ste.infra.repository.BaseJpaDao">
+		<constructor-arg value="org.tch.ste.domain.entity.IssuerConfiguration" />
+	</bean>
+
+	<bean id="paymentInstrumentDao" class="org.tch.ste.infra.repository.BaseJpaDao">
+		<constructor-arg value="org.tch.ste.domain.entity.PaymentInstrument" />
+	</bean>
+
+	<bean id="permittedTokenRequestorArnDao" class="org.tch.ste.infra.repository.BaseJpaDao">
+		<constructor-arg
+			value="org.tch.ste.domain.entity.PermittedTokenRequestorArn" />
+	</bean>
+
+	<bean id="customerDao" class="org.tch.ste.infra.repository.BaseJpaDao">
+		<constructor-arg value="org.tch.ste.domain.entity.Customer" />
+	</bean>
+	<bean id="tokenRequestorConfigurationDao" class="org.tch.ste.infra.repository.BaseJpaDao">
+		<constructor-arg
+			value="org.tch.ste.domain.entity.TokenRequestorConfiguration" />
+	</bean>
+	<bean id="issuerTokenRequestorDao" class="org.tch.ste.infra.repository.BaseJpaDao">
+		<constructor-arg value="org.tch.ste.domain.entity.IssuerTokenRequestors" />
+	</bean>
+	<bean id="loginHistoryDao" class="org.tch.ste.infra.repository.BaseJpaDao">
+		<constructor-arg value="org.tch.ste.domain.entity.LoginHistory" />
+	</bean>
+	<!-- Lock out user to find last access id from this object. -->
+	<bean id="reportHistoryDao" class="org.tch.ste.infra.repository.BaseJpaDao">
+		<constructor-arg value="org.tch.ste.domain.entity.ReportHistory" />
+	</bean>
+
+</beans>

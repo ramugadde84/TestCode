@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans	
+		http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/task	
+		http://www.springframework.org/schema/task/spring-task-4.0.xsd">
+
+
+	<bean id="initIssuerLogo"
+		class="org.tch.ste.auth.web.controller.support.InitIssuerLogoUtil">
+			<constructor-arg>
+				<list>
+					<value>classpath:hdfc.jpg</value>
+					<value>classpath:icici.jpg</value>
+					<value>classpath:sbi.jpg</value>
+				</list>
+			</constructor-arg>
+	</bean>
+	<task:scheduled-tasks>
+ 	   <task:scheduled ref="initIssuerLogo" method="initIssuerLogos" 
+                fixed-rate="#{ T(java.lang.Long).MAX_VALUE }" />
+	</task:scheduled-tasks>
+</beans>

@@ -1,0 +1,237 @@
+<beans:beans xmlns="http://www.springframework.org/schema/batch"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="
+           http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/batch 
+           http://www.springframework.org/schema/batch/spring-batch-3.0.xsd
+           http://www.springframework.org/schema/util 
+			http://www.springframework.org/schema/util/spring-util.xsd">
+	<!-- Common repository for all jobs -->
+	<beans:bean id="jobRepository"
+		class="org.springframework.batch.core.repository.support.JobRepositoryFactoryBean"
+		p:dataSource-ref="steDataSource" p:databaseType="mysql"
+		p:transactionManager-ref="onlineTransactionManager"
+		p:isolationLevelForCreate="ISOLATION_DEFAULT" />
+
+	<!-- Job Launcher -->
+	<beans:bean id="synchronousJobLauncher"
+		class="org.springframework.batch.core.launch.support.SimpleJobLauncher"
+		p:jobRepository-ref="jobRepository" />
+
+	<!-- Common stuff for most batches -->
+	<beans:bean id="outputFileMoveTasklet"
+		class="org.tch.ste.auth.service.internal.batch.OutputFileMoveTasklet"
+		scope="step">
+		<beans:constructor-arg value="#{jobParameters[tempOutputFileName]}" />
+		<beans:constructor-arg value="#{jobParameters[actualOutputFileName]}" />
+	</beans:bean>
+
+	<!-- Listener -->
+	<beans:bean id="reportHistoryManagementListener"
+		class="org.tch.ste.infra.batch.ReportHistoryManagementListener" scope="job">
+		<beans:constructor-arg value="#{jobParameters[reportType]}" />
+		<beans:constructor-arg value="#{jobParameters[reportEndTime]}" />
+	</beans:bean>
+
+	<!-- Header Tasklet -->
+	<beans:bean id="lockedOutUsersReportHeaderWriterTasklet"
+		class="org.tch.ste.auth.service.internal.batch.lockoutuser.LockedOutUsersReportHeaderWriterTasklet"
+		scope="step">
+		<beans:constructor-arg value="#{jobParameters[tempOutputFileName]}" />
+	</beans:bean>
+
+	<!-- promotion listener -->
+	<beans:bean id="promotionListener"
+		class="org.springframework.batch.core.listener.ExecutionContextPromotionListener">
+		<beans:property name="keys" value="numberOfRecords,value" />
+	</beans:bean>
+
+	<!-- Trailer Writer listener -->
+	<!-- Locked out Users Reports Header trailer writer. -->
+	<beans:bean id="lockedOutUsersReportTrailerWriter"
+		class="org.tch.ste.auth.service.internal.batch.lockoutuser.LockedOutUsersReportTrailerWriter"
+		scope="step">
+		<beans:constructor-arg value="#{jobParameters[tempOutputFileName]}" />
+	</beans:bean>
+
+	<!-- Item Reader when lock attempts happen -->
+	<beans:bean id="lockOutUserAttemptsReportsItemReader"
+		class="org.springframework.batch.item.database.JpaPagingItemReader"
+		scope="step">
+		<beans:property name="entityManagerFactory" ref="entityManagerFactory" />
+		<beans:property name="queryString"
+			value="select l from LoginHistory l join fetch l.customer  
+			              where l.loginAttemptTime &gt;= :reportStartTime
+			              and l.loginAttemptTime &lt; :reportEndTime
+			              and 
+			              (l.accountLockedFromFailedLogins IS TRUE 
+			                or l.accountLockedFromSucessfulLogin IS TRUE) 
+			              order by l.customer.userName" />
+		<beans:property name="parameterValues">
+			<util:map>
+				<beans:entry key="reportStartTime" value="#{jobParameters[reportStartTime]}" />
+				<beans:entry key="reportEndTime" value="#{jobParameters[reportEndTime]}" />
+			</util:map>
+		</beans:property>
+		<beans:property name="pageSize" value="100" />
+	</beans:bean>
+
+	<!-- Processor for lock attempts. -->
+	<beans:bean id="lockOutUserAttemptsReportsItemProcessor"
+		class="org.tch.ste.auth.service.internal.batch.lockoutuser.LockedOutUsersAttemptsReportBatchProcessor"
+		scope="step" />
+
+	<!-- Item Reader when lock With CustomerLock Batch -->
+	<beans:bean id="lockOutUserCustomerLockBatchReportsItemReader"
+		class="org.springframework.batch.item.database.JpaPagingItemReader"
+		scope="step">
+		<beans:property name="entityManagerFactory" ref="entityManagerFactory" />
+		<beans:property name="queryString"
+			value="select c from Customer c
+			                where c.accountLocked IS TRUE
+			                and
+			                c.accountLockedAt &gt; :reportStartTime
+			                and 
+			                c.accountLockedAt &lt; :reportEndTime
+			                and
+			                c.userName NOT IN (
+			                select l.userName from LoginHistory l where l.loginAttemptTime &gt; :reportStartTime
+			              	and l.loginAttemptTime &lt; :reportEndTime  and 
+			              	(l.accountLockedFromFailedLogins IS TRUE 
+			                or l.accountLockedFromSucessfulLogin IS TRUE))" />
+		<beans:property name="parameterValues">
+			<util:map>
+				<beans:entry key="reportStartTime" value="#{jobParameters[reportStartTime]}" />
+				<beans:entry key="reportEndTime" value="#{jobParameters[reportEndTime]}" />
+			</util:map>
+		</beans:property>
+		<beans:property name="pageSize" value="100" />
+	</beans:bean>
+
+	<!-- Writer when attempts will happen through auth UI. -->
+	<beans:bean id="lockOutUserAttemptsReportsWriter"
+		class="org.tch.ste.auth.service.internal.batch.lockoutuser.LockedOutUsersAttemptsReportBatchWriter"
+		scope="step">
+		<beans:constructor-arg value="#{jobParameters[tempOutputFileName]}" />
+		<beans:constructor-arg value="#{jobParameters[timeStamp]}" />
+		<beans:constructor-arg value="#{jobParameters[iisn]}" />
+	</beans:bean>
+
+	<!-- Writer when Batch will update account_locked field in customers table. -->
+	<beans:bean id="lockOutUserBatchReportsWriter"
+		class="org.tch.ste.auth.service.internal.batch.lockoutuser.LockedOutUsersCustomerBatchReportBatchWriter"
+		scope="step">
+		<beans:constructor-arg value="#{jobParameters[tempOutputFileName]}" />
+		<beans:constructor-arg value="#{jobParameters[timeStamp]}" />
+		<beans:constructor-arg value="#{jobParameters[iisn]}" />
+	</beans:bean>
+
+	<!-- Job -->
+	<job id="lockoutuser">
+		<!-- Tasklet step -->
+		<step id="lockOutUsersHeaderAndRecordsCountStep" next="fetchLockedOutUsersAttemptRequest">
+			<tasklet ref="lockedOutUsersReportHeaderWriterTasklet"
+				transaction-manager="onlineTransactionManager" />
+			<listeners>
+				<listener ref="promotionListener" />
+			</listeners>
+		</step>
+
+		<!-- lock out attempts through auth -->
+		<step id="fetchLockedOutUsersAttemptRequest" next="fetchLockedOutUsersBatchRequest">
+			<tasklet transaction-manager="onlineTransactionManager">
+				<chunk reader="lockOutUserAttemptsReportsItemReader"
+					processor="lockOutUserAttemptsReportsItemProcessor" writer="lockOutUserAttemptsReportsWriter"
+					commit-interval="100">
+				</chunk>
+				<no-rollback-exception-classes>
+					<include class="java.lang.RuntimeException" />
+					<include class="java.lang.Error" />
+				</no-rollback-exception-classes>
+			</tasklet>
+		</step>
+
+		<!-- lock out attempts happen through customer lock unlock account batch -->
+
+		<step id="fetchLockedOutUsersBatchRequest" next="outputFile">
+			<tasklet transaction-manager="onlineTransactionManager">
+				<chunk reader="lockOutUserCustomerLockBatchReportsItemReader"
+					writer="lockOutUserBatchReportsWriter" commit-interval="100">
+				</chunk>
+				<no-rollback-exception-classes>
+					<include class="java.lang.RuntimeException" />
+					<include class="java.lang.Error" />
+				</no-rollback-exception-classes>
+			</tasklet>
+			<listeners>
+				<listener ref="lockedOutUsersReportTrailerWriter" />
+			</listeners>
+		</step>
+		<step id="outputFile">
+			<tasklet ref="outputFileMoveTasklet" transaction-manager="onlineTransactionManager">
+			</tasklet>
+		</step>
+		<listeners>
+			<listener ref="reportHistoryManagementListener" />
+		</listeners>
+	</job>
+
+	<!-- Authentication Attempts -->
+	<beans:bean id="authAttemptsUsersReportsItemReader"
+		class="org.springframework.batch.item.database.JpaPagingItemReader"
+		scope="step">
+		<beans:property name="entityManagerFactory" ref="entityManagerFactory" />
+		<beans:property name="queryString"
+			value="select l from LoginHistory l where l.loginAttemptTime &gt;= :reportStartTime
+				and l.loginAttemptTime &lt; :reportEndTime" />
+		<beans:property name="parameterValues">
+			<util:map>
+				<beans:entry key="reportStartTime" value="#{jobParameters[reportStartTime]}" />
+				<beans:entry key="reportEndTime" value="#{jobParameters[reportEndTime]}" />
+			</util:map>
+		</beans:property>
+		<beans:property name="pageSize" value="100" />
+	</beans:bean>
+
+	<beans:bean id="authAttemptsUsersReportsWriter"
+		class="org.tch.ste.auth.service.internal.batch.authattempts.AuthAttemptsReportBatchWriter"
+		scope="step">
+		<beans:constructor-arg value="#{jobParameters[tempOutputFileName]}" />
+		<beans:constructor-arg value="#{jobParameters[timeStamp]}" />
+		<beans:constructor-arg value="#{jobParameters[iisn]}" />
+	</beans:bean>
+
+	<!-- Listener -->
+	<beans:bean id="authAttemptsHeaderTrailerWriter"
+		class="org.tch.ste.auth.service.internal.batch.authattempts.AuthAttemptsHeaderTrailerWriter"
+		scope="step">
+		<beans:constructor-arg value="#{jobParameters[tempOutputFileName]}" />
+	</beans:bean>
+
+	<!-- creation of job for Locked out users report -->
+	<job id="authAttemptsUsers">
+		<step id="fetchAuthAttemptsUsersRequest" next="outputFile1">
+			<tasklet transaction-manager="onlineTransactionManager">
+				<chunk reader="authAttemptsUsersReportsItemReader" writer="authAttemptsUsersReportsWriter"
+					commit-interval="1000">
+				</chunk>
+				<no-rollback-exception-classes>
+					<include class="java.lang.RuntimeException" />
+					<include class="java.lang.Error" />
+				</no-rollback-exception-classes>
+			</tasklet>
+			<listeners>
+				<listener ref="authAttemptsHeaderTrailerWriter" />
+			</listeners>
+		</step>
+		<step id="outputFile1">
+			<tasklet ref="outputFileMoveTasklet" transaction-manager="onlineTransactionManager">
+			</tasklet>
+		</step>
+		<listeners>
+			<listener ref="reportHistoryManagementListener" />
+		</listeners>
+	</job>
+</beans:beans>

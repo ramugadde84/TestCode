@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans	
+		http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+	<bean id="hdfcJdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate" p:dataSource-ref="ds_001">
+	</bean>
+	
+	<bean id="iciciJdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate" p:dataSource-ref="ds_002">
+	</bean>
+	
+	<bean id="encryptionService" class="org.tch.ste.infra.service.core.security.EncryptionServiceTestImpl"/>
+</beans>

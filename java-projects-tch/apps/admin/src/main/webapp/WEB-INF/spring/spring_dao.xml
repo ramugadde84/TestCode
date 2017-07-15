@@ -1,0 +1,74 @@
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans	
+		http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+
+
+	<bean id="userDao" class="org.tch.ste.infra.repository.BaseJpaDao">
+		<constructor-arg value="org.tch.ste.admin.domain.entity.User" />
+	</bean>
+
+
+	<bean id="roleDao" class="org.tch.ste.infra.repository.BaseJpaDao">
+		<constructor-arg value="org.tch.ste.admin.domain.entity.Role" />
+	</bean>
+	
+	<bean id="userRoleDao" class="org.tch.ste.infra.repository.BaseJpaDao">
+		<constructor-arg value="org.tch.ste.admin.domain.entity.UserRole" />
+	</bean>
+
+	<bean id="issuerConfigurationDao" class="org.tch.ste.infra.repository.BaseJpaDao">
+		<constructor-arg value="org.tch.ste.domain.entity.IssuerConfiguration" />
+	</bean>
+
+	<bean id="issuerTokenRequestorDao" class="org.tch.ste.infra.repository.BaseJpaDao">
+		<constructor-arg value="org.tch.ste.domain.entity.IssuerTokenRequestors" />
+	</bean>
+
+	<bean id="tokenRequestorConfigurationDao" class="org.tch.ste.infra.repository.BaseJpaDao">
+		<constructor-arg
+			value="org.tch.ste.domain.entity.TokenRequestorConfiguration" />
+	</bean>
+	<!-- newly added -->
+	<bean id="tokenBinMappingDao" class="org.tch.ste.infra.repository.BaseJpaDao">
+		<constructor-arg value="org.tch.ste.domain.entity.TokenBinMapping" />
+	</bean>
+	<bean id="authenticationMechanismDao" class="org.tch.ste.infra.repository.BaseJpaDao">
+		<constructor-arg value="org.tch.ste.domain.entity.AuthenticationMechanism" />
+	</bean>
+
+	<bean id="panBinDao" class="org.tch.ste.infra.repository.BaseJpaDao">
+		<constructor-arg value="org.tch.ste.domain.entity.PanBin" />
+	</bean>
+
+	<bean id="binMappingDao" class="org.tch.ste.infra.repository.BaseJpaDao">
+		<constructor-arg value="org.tch.ste.domain.entity.IisnBin" />
+	</bean>
+
+	<bean id="tokenBinDao" class="org.tch.ste.infra.repository.BaseJpaDao">
+		<constructor-arg value="org.tch.ste.domain.entity.TokenBin" />
+	</bean>
+	<bean id="newtorkDao" class="org.tch.ste.infra.repository.BaseJpaDao">
+		<constructor-arg value="org.tch.ste.domain.entity.Network"/>
+	</bean>
+
+	<bean id="iisnBinDao" class="org.tch.ste.infra.repository.BaseJpaDao">
+		<constructor-arg value="org.tch.ste.domain.entity.IisnBin" />
+	</bean>
+	
+	<!-- newly added  -->
+	
+	<bean id="customerDao" class="org.tch.ste.infra.repository.BaseJpaDao">
+		<constructor-arg value=" org.tch.ste.domain.entity.Customer" />
+	</bean>
+	
+	<!--  Added post 1st release for issues discovered in Vault & Auth -->
+	<bean id="permittedTokenRequestorDao" class="org.tch.ste.infra.repository.BaseJpaDao">
+		<constructor-arg value=" org.tch.ste.domain.entity.PermittedTokenRequestor" />
+	</bean>
+	
+</beans>

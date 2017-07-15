@@ -1,0 +1,1 @@
+include 'common:domain','common:infra','common:test','apps:admin','apps:vault','apps:auth'

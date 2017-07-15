@@ -1,0 +1,60 @@
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans	
+		http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+
+	<bean id="intFormatter" class="org.tch.ste.infra.batch.support.IntegerFormatterImpl" />
+	<bean id="floatFormatter" class="org.tch.ste.infra.batch.support.FloatFormatterImpl" />
+	<bean id="doubleFormatter" class="org.tch.ste.infra.batch.support.DoubleFormatterImpl" />
+	<bean id="booleanFormatter" class="org.tch.ste.infra.batch.support.BooleanFormatterImpl" />
+	<bean id="longFormatter" class="org.tch.ste.infra.batch.support.LongFormatterImpl" />
+
+	<!-- Common Readers & Writers -->
+	<bean id="headerReader" class="org.tch.ste.infra.batch.support.FixedLengthReaderImpl">
+		<constructor-arg value="org.tch.ste.vault.domain.dto.BatchFileHeader" />
+	</bean>
+	<bean id="trailerReader" class="org.tch.ste.infra.batch.support.FixedLengthReaderImpl">
+		<constructor-arg value="org.tch.ste.vault.domain.dto.BatchFileTrailer" />
+	</bean>
+
+
+	<!-- For Payment Instrument Preload -->
+	<bean id="paymentInstrumentPreloadHeaderWriter" class="org.tch.ste.infra.batch.support.FixedLengthWriterImpl">
+		<constructor-arg value="org.tch.ste.vault.domain.dto.BatchOutputFileHeader" />
+		<constructor-arg value="206" />
+	</bean>
+	<bean id="paymentInstrumentContentWriter" class="org.tch.ste.infra.batch.support.FixedLengthWriterImpl">
+		<constructor-arg
+			value="org.tch.ste.vault.service.internal.batch.preloadpaymentinstrument.PaymentInstrumentPreloadRecordResponse" />
+		<constructor-arg value="0" />
+	</bean>
+	<bean id="paymentInstrumentContentReader" class="org.tch.ste.infra.batch.support.FixedLengthReaderImpl">
+		<constructor-arg
+			value="org.tch.ste.vault.service.internal.batch.preloadpaymentinstrument.PaymentInstrumentPreloadRecordResponse" />
+	</bean>
+	<bean id="paymentInstrumentTrailerWriter" class="org.tch.ste.infra.batch.support.FixedLengthWriterImpl">
+		<constructor-arg value="org.tch.ste.vault.domain.dto.BatchFileTrailer" />
+		<constructor-arg value="251" />
+	</bean>
+	<!-- For Lock or Unlock Account -->
+	<bean id="loclUnlockHeaderWriter" class="org.tch.ste.infra.batch.support.FixedLengthWriterImpl">
+		<constructor-arg value="org.tch.ste.vault.domain.dto.BatchOutputFileHeader" />
+		<constructor-arg value="0" />
+	</bean>
+	<bean id="lockUnlockAccountWriter" class="org.tch.ste.infra.batch.support.FixedLengthWriterImpl">
+		<constructor-arg
+			value="org.tch.ste.vault.service.internal.batch.customer.LockUnlockCustomerAccountResponse" />
+		<constructor-arg value="5" />
+	</bean>
+	<bean id="lockUnlockCustomerAccountReader" class="org.tch.ste.infra.batch.support.FixedLengthReaderImpl">
+		<constructor-arg
+			value="org.tch.ste.vault.service.internal.batch.customer.LockUnlockCustomerAccountResponse" />
+	</bean>
+	<bean id="lockUnlockTrailerWriter" class="org.tch.ste.infra.batch.support.FixedLengthWriterImpl">
+		<constructor-arg value="org.tch.ste.vault.domain.dto.BatchFileTrailer" />
+		<constructor-arg value="45" />
+	</bean>
+</beans>

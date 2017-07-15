@@ -1,0 +1,16 @@
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:ldap="http://www.springframework.org/schema/ldap"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans	
+		http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/ldap 
+		http://www.springframework.org/schema/ldap/spring-ldap.xsd">
+	<bean id="ldapTemplate" class="org.springframework.ldap.core.LdapTemplate">
+		<constructor-arg ref="contextSource"/>
+	</bean>	
+	<bean id="userSearchServiceImpl" class="org.tch.ste.admin.service.internal.user.UserSearchServiceImpl">
+		<constructor-arg value="uid={0},ou=users"/>
+	</bean>
+</beans>

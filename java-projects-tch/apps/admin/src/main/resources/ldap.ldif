@@ -1,0 +1,174 @@
+version: 1
+
+dn: uid=tch-configuration,ou=users,ou=system
+objectClass: top
+objectClass: inetOrgPerson
+objectClass: person
+objectClass: organizationalPerson
+cn: tch-configuration
+sn: tch-configuration
+uid: tch-configuration
+userPassword:: e1NTSEF9d1A0dFZhRzNRdTgxMUZRWTBVT1BtZzFqUVVQWVFWcFhTMHFGWkE9P
+ Q==
+
+dn: ou=interceptors,ou=configuration,ou=system
+objectClass: organizationalUnit
+objectClass: top
+ou: interceptors
+
+dn: ou=system
+objectclass: organizationalUnit
+objectclass: top
+ou: system
+description: The System context entry
+
+dn: uid=tch-test-user-2,ou=users,ou=system
+objectClass: top
+objectClass: inetOrgPerson
+objectClass: person
+objectClass: organizationalPerson
+cn: tch-test-user-2
+sn: tch-test-user-2
+uid: tch-test-user-2
+userPassword:: e1NTSEF9YnJjbm1CZGdWRVhpVmNUMS9xYzZndnoyb1Y2aEg1M1RwTW5jc2c9P
+ Q==
+
+dn: uid=issuer-mgmt,ou=users,ou=system
+objectClass: top
+objectClass: inetOrgPerson
+objectClass: person
+objectClass: organizationalPerson
+cn: issuer-mgmt
+sn: issuer-mgmt
+uid: issuer-mgmt
+userPassword:: e1NTSEF9L21TNk1NR29sYkNQVkY3c0tkT3UxSzRTOEJ5TlFNa2s0dW5pV3c9P
+ Q==
+
+dn: cn=Administrators,ou=groups,ou=system
+objectClass: groupOfUniqueNames
+objectClass: top
+cn: Administrators
+uniqueMember: 0.9.2342.19200300.100.1.1=admin,2.5.4.11=system
+
+dn: uid=tch-test-user-1,ou=users,ou=system
+objectClass: top
+objectClass: inetOrgPerson
+objectClass: person
+objectClass: organizationalPerson
+cn: tch-test-user-1
+sn: tch-test-user-1
+uid: tch-test-user-1
+userPassword:: e1NTSEF9QlJzdHhZcDJ6MkNxbmlsckpwcFcwTGtwQW1VaU14eFhCdWc2b1E9P
+ Q==
+
+dn: uid=tch-user-mgmt,ou=users,ou=system
+objectClass: top
+objectClass: inetOrgPerson
+objectClass: person
+objectClass: organizationalPerson
+cn: tch-user-mgmt
+sn: tch-user-mgmt
+uid: tch-user-mgmt
+userPassword:: e1NTSEF9cFdrZFZmVEp4MlhjM3dRaHNSb2VmU25pRnN2Q2thcFlHcnQvQUE9P
+ Q==
+
+dn: uid=admin,ou=system
+objectClass: tlsKeyInfo
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+cn: system administrator
+keyAlgorithm: RSA
+privateKey:: MIIBVQIBADANBgkqhkiG9w0BAQEFAASCAT8wggE7AgEAAkEAo45bIUJerfE9Wya
+ DR3vEKQfrGYhxEtK1jdTQQ3KGb7NeEMb8MYf9uhJxcRG1PuHGAuPyhoszD5WlBw7s97A5gwIDAQ
+ ABAkBXbeym/cyQ3Qk4ZYD9wFpeuJ3jOz1+m2Zz19QwidL1eCfQm/ZLP/6CDXdyi8+2xiuyz7je4
+ 6/akHAHRk8adz1pAiEA4MACNZ2rY6dfJ+wmpsoHFAiS4IVwMot3HBrd50Js+M8CIQC6TCULRdpp
+ UVjJ6tjfr1JUFc+z2BPi8PQYsp8RpIa5DQIhAIhEAlLtqLeACBKVfI3NmeMMm7jjTrZmlq4EoBw
+ Ryy5DAiApXmlHdI6InojB5cWc/lig1WsW+5+G4IzDwz5xc4B7LQIhAJu38/CeCWwlksHYY/BMLy
+ BXnq40GIesMkWgA9VgBuRd
+privateKeyFormat: PKCS#8
+publicKey:: MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAKOOWyFCXq3xPVsmg0d7xCkH6xmIcRLS
+ tY3U0ENyhm+zXhDG/DGH/boScXERtT7hxgLj8oaLMw+VpQcO7PewOYMCAwEAAQ==
+publicKeyFormat: X.509
+sn: administrator
+displayName: Directory Superuser
+uid: admin
+userCertificate:: MIIBdzCCASECBgFFzG/H/zANBgkqhkiG9w0BAQUFADBCMQswCQYDVQQGEw
+ JVUzEMMAoGA1UEChMDQVNGMRIwEAYDVQQLEwlEaXJlY3RvcnkxETAPBgNVBAMTCEFwYWNoZURTM
+ B4XDTE0MDUwNTEyNTA0OFoXDTE1MDUwNTEyNTA0OFowRjELMAkGA1UEBhMCVVMxDDAKBgNVBAoT
+ A0FTRjESMBAGA1UECxMJRGlyZWN0b3J5MRUwEwYDVQQDEwxNTC1LQVJUSElLU1IwXDANBgkqhki
+ G9w0BAQEFAANLADBIAkEAo45bIUJerfE9WyaDR3vEKQfrGYhxEtK1jdTQQ3KGb7NeEMb8MYf9uh
+ JxcRG1PuHGAuPyhoszD5WlBw7s97A5gwIDAQABMA0GCSqGSIb3DQEBBQUAA0EAorOYMXt5aUCgE
+ 9yYGMjRow++78ur7lwtSWX19kbzlagamYCXB++ehMhY8u5oGYFLaO4EPzYvN9K/S38xejJE3A==
+userPassword:: c2VjcmV0
+
+dn: prefNodeName=sysPrefRoot,ou=system
+objectClass: extensibleObject
+objectClass: organizationalUnit
+objectClass: top
+prefNodeName: sysPrefRoot
+
+dn: ou=services,ou=configuration,ou=system
+objectClass: organizationalUnit
+objectClass: top
+ou: services
+
+dn: ou=configuration,ou=system
+objectClass: organizationalUnit
+objectClass: top
+ou: configuration
+
+dn: uid=unauthorized-issuer,ou=users,ou=system
+objectClass: top
+objectClass: inetOrgPerson
+objectClass: person
+objectClass: organizationalPerson
+cn: unauthorized-issuer
+sn: unauthorized-issuer
+uid: unauthorized-issuer
+userPassword:: e1NTSEF9ZnVOWnVxMnFvOXpYVG40VWJjeHQ1OW95ZVEzZFF3Q2NCODhwVkE9P
+ Q==
+
+dn: ou=consumers,ou=system
+objectclass: top
+objectclass: organizationalUnit
+ou: consumers
+
+dn: ou=users,ou=system
+objectClass: organizationalUnit
+objectClass: top
+ou: users
+
+dn: uid=issuer-test-user-1,ou=users,ou=system
+objectClass: top
+objectClass: inetOrgPerson
+objectClass: person
+objectClass: organizationalPerson
+cn: issuer-test-user-1
+sn: issuer-test-user-1
+uid: issuer-test-user-1
+userPassword:: e1NTSEF9ZkxjZFpCVjZMTlVRRG5iV1Nkc3U4eE01WDgyUU1MRE9ud2Vqd2c9P
+ Q==
+
+dn: ou=partitions,ou=configuration,ou=system
+objectClass: organizationalUnit
+objectClass: top
+ou: partitions
+
+dn: uid=issuer-test-user-2,ou=users,ou=system
+objectClass: top
+objectClass: inetOrgPerson
+objectClass: person
+objectClass: organizationalPerson
+cn: issuer-test-user-2
+sn: issuer-test-user-2
+uid: issuer-test-user-2
+userPassword:: e1NTSEF9Rm1kOEs4TVlZZmc2TUxMbHFsVWVPc3J4YUwydzJMdVpKdC95bWc9P
+ Q==
+
+dn: ou=groups,ou=system
+objectClass: organizationalUnit
+objectClass: top
+ou: groups
+

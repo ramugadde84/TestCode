@@ -1,0 +1,51 @@
+h4 {
+	/*font-size: 90%;*/
+	text-align: center;
+}
+
+.logo {
+	text-align: center;
+	margin-bottom: 20px;
+}
+
+.logo img {
+	max-width: 200px;
+}
+
+#pageSelectPi .ui-controlgroup label {
+	/*font-size: 14px;*/
+	padding-left: 3.5em;
+}
+
+.ui-mobile label {
+	font-size: 14px;
+}
+
+.ui-header .ui-title {
+	margin: 0 0;
+}
+
+#authApp .ui-footer h6 {
+	font-size: 60%;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+label.error {
+    display: inline-block;
+}
+label.error {
+    color: red;
+    float: none;
+    font-size: 16px;
+    font-weight: normal;
+    line-height: 1.4;
+    width: 100%;
+}
+
+input.error {
+	border: 1px solid red;
+}
+.ui-popup-screen.in {
+    background-color: gray
+}

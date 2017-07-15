@@ -1,0 +1,12 @@
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans	
+		http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+	<bean id="batchFileWatcherInitiator" class="org.tch.ste.vault.service.core.batch.BatchFileWatcherInitiator"/>
+	<bean id="passwordExpiryInitiator" class="org.tch.ste.vault.service.core.batch.PasswordExpiryInitiator"/>
+	<bean id="paymentTokenUsageInitiator" class="org.tch.ste.vault.service.core.paymenttoken.PaymentTokenUsageInitiator"/>
+</beans>

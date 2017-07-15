@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm orm_2_0.xsd"
+	version="2.0">
+	<named-query name="getIssuerByIisn">
+		<query>
+			select i from IssuerConfiguration i where i.iisn=:iisn
+		</query>
+	</named-query>
+
+
+	<named-query name="findPaymentInstrumentsByCustomer">
+		<query>
+			select p from PaymentInstrument p where
+			p.customer.userName=:userId
+		</query>
+	</named-query>
+	<named-query name="getCustomerByUserName">
+		<query>
+			select c from Customer c where c.userName=:userName
+		</query>
+	</named-query>
+	<named-query name="getIssuerTokenRequestorByTridAndIisn">
+		<query>
+			select i from IssuerTokenRequestors i where
+			i.issuerConfiguration.iisn=:iisn
+			and
+			i.tokenRequestorConfiguration.networkTokenRequestId=:trId
+		</query>
+	</named-query>
+	<named-query name="checkTokenRequestorIdArn">
+		<query>
+			select ptra from PermittedTokenRequestorArn ptra
+			where
+			ptra.arn.id=:arnId and
+			ptra.permittedTokenRequestor.networkTokenRequestorId=:tokenRequestorId
+			and ptra.ciid=:ciid
+			and ptra.active=:active
+		</query>
+	</named-query>
+
+	<named-query name="getTokenRequestorByTrId">
+		<query>
+			select t from TokenRequestorConfiguration t where
+			t.networkTokenRequestId=:trId
+		</query>
+	</named-query>
+	<named-query name="getReportHistory">
+		<query>
+			select r from ReportHistory r where r.reportType=:reportType
+		</query>
+	</named-query>
+</entity-mappings>

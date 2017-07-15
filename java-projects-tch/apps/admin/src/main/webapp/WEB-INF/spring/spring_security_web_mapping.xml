@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+           http://www.springframework.org/schema/security
+           http://www.springframework.org/schema/security/spring-security.xsd">
+
+	
+	<http use-expressions="true">
+		<intercept-url pattern="/css/**" access="permitAll" />
+		<intercept-url pattern="/js/**" access="permitAll" />
+		<intercept-url pattern="/images/**" access="permitAll" />
+		<intercept-url pattern="/app/login" access="permitAll" />
+		<intercept-url pattern="/app/logout" access="permitAll" />
+		<intercept-url pattern="/views/login.jsp" access="permitAll" />
+		<intercept-url pattern="/views/error.jsp" access="permitAll"/>
+		<intercept-url pattern="/app/issuer/**" access="hasRole('ROLE_TCH_CONFIGURATION')"/>
+		<intercept-url pattern="/app/tokenRequestor/**" access="hasRole('ROLE_TCH_CONFIGURATION')"/>
+		<intercept-url pattern="/app/user/customer/**" access="hasRole('ROLE_ISSUER_MGMT')"/>
+		<intercept-url pattern="/app/keepAlive" access="hasAnyRole('ROLE_TCH_USER_MGMT','ROLE_ISSUER_MGMT','ROLE_TCH_CONFIGURATION')"/>
+		<intercept-url pattern="/app/user/usermgmt/**" access="hasRole('ROLE_TCH_USER_MGMT')"/>
+		<intercept-url pattern="/app/vault/**" access="hasRole('ROLE_TCH_CONFIGURATION')"/>
+		<intercept-url pattern="/app/user/any/**"
+			access="hasAnyRole('ROLE_TCH_USER_MGMT','ROLE_ISSUER_MGMT')" />
+		<intercept-url pattern="/**"
+			access="hasAnyRole('ROLE_TCH_USER_MGMT','ROLE_TCH_CONFIGURATION','ROLE_ISSUER_MGMT')" />
+		<form-login login-page="/app/login" default-target-url="/views/home.jsp" />
+		<logout  logout-url="/app/logout" invalidate-session="true"
+			success-handler-ref="logoutHandler"/>
+		<access-denied-handler ref="steAccessDeniedHandler"/>
+		<headers>
+	        <cache-control />
+	        <content-type-options />
+	        <hsts />
+	        <frame-options />
+	        <xss-protection />
+	    </headers>
+	    <csrf />
+	</http>
+</beans:beans>

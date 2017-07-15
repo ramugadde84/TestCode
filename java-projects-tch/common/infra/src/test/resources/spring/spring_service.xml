@@ -1,0 +1,24 @@
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans	
+		http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+
+	<bean id="personFileReader" class="org.tch.ste.infra.batch.support.FixedLengthReaderImpl">
+		<constructor-arg value="org.tch.ste.infra.test.domain.dto.TestPerson"/>
+	</bean>
+	
+	<bean id="personFileWriter" class="org.tch.ste.infra.batch.support.FixedLengthWriterImpl">
+		<constructor-arg value="org.tch.ste.infra.test.domain.dto.TestPerson"/>
+		<constructor-arg value="0"/>
+	</bean>
+	
+	<bean id="intFormatter" class="org.tch.ste.infra.batch.support.IntegerFormatterImpl"/>
+	<bean id="floatFormatter" class="org.tch.ste.infra.batch.support.FloatFormatterImpl"/>
+	<bean id="doubleFormatter" class="org.tch.ste.infra.batch.support.DoubleFormatterImpl"/>
+	<bean id="booleanFormatter" class="org.tch.ste.infra.batch.support.BooleanFormatterImpl"/>
+	<bean id="longFormatter" class="org.tch.ste.infra.batch.support.LongFormatterImpl"/>
+</beans>

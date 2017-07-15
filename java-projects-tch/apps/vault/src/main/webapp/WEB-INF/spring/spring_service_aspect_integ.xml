@@ -1,0 +1,158 @@
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans	
+		http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/aop 
+		http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+	<aop:aspectj-autoproxy />
+
+	<bean id="passwordExpiryInjector"
+		class="org.tch.ste.infra.repository.support.EntityManagerInjectorAspect">
+		<constructor-arg value="iisn" />
+		<constructor-arg>
+			<null />
+		</constructor-arg>
+	</bean>
+
+	<bean id="arnGenerationInjector"
+		class="org.tch.ste.infra.repository.support.EntityManagerInjectorAspect">
+		<constructor-arg value="iisn" />
+		<constructor-arg>
+			<null />
+		</constructor-arg>
+	</bean>
+
+	<bean id="batchHistoryInjector"
+		class="org.tch.ste.infra.repository.support.EntityManagerInjectorAspect">
+		<constructor-arg value="iisn" />
+		<constructor-arg>
+			<null />
+		</constructor-arg>
+	</bean>
+
+	<bean id="paymentInstrumentPreloadInjector"
+		class="org.tch.ste.infra.repository.support.EntityManagerInjectorAspect">
+		<constructor-arg value="iisn" />
+		<constructor-arg>
+			<null />
+		</constructor-arg>
+	</bean>
+
+	<bean id="paymentInstrumentDeactivationInjector"
+		class="org.tch.ste.infra.repository.support.EntityManagerInjectorAspect">
+		<constructor-arg value="iisn" />
+		<constructor-arg>
+			<null />
+		</constructor-arg>
+	</bean>
+
+	<bean id="paymentTokenUsageInjector"
+		class="org.tch.ste.infra.repository.support.EntityManagerInjectorAspect">
+		<constructor-arg value="iisn" />
+		<constructor-arg>
+			<null />
+		</constructor-arg>
+	</bean>
+
+	<bean id="tokenCreationInjector"
+		class="org.tch.ste.infra.repository.support.EntityManagerInjectorAspect">
+		<constructor-arg value="iisn" />
+		<constructor-arg>
+			<null />
+		</constructor-arg>
+	</bean>
+
+	<bean id="PaymentInstrumentActivationInjector"
+		class="org.tch.ste.infra.repository.support.EntityManagerInjectorAspect">
+		<constructor-arg value="iisn" />
+		<constructor-arg>
+			<null />
+		</constructor-arg>
+	</bean>
+
+	<bean id="deactivatePaymentsInstrumentInjector"
+		class="org.tch.ste.infra.repository.support.EntityManagerInjectorAspect">
+		<constructor-arg value="iisn" />
+		<constructor-arg>
+			<null />
+		</constructor-arg>
+	</bean>
+
+	<aop:config>
+		<aop:pointcut
+			expression="execution(* org.tch.ste.vault.service.internal.batch.passwordexpiry.PasswordExpiryServiceImpl.expirePasswords(..))"
+			id="passwordExpiryPointcut" />
+		<aop:pointcut
+			expression="execution(* org.tch.ste.vault.service.internal.generation.ArnGenerationFacadeImpl.generateArn(..))"
+			id="arnGenerationPointcut" />
+		<aop:pointcut
+			expression="execution(* org.tch.ste.vault.service.internal.batchhistory.BatchHistoryFacadeImpl.*(..))"
+			id="batchHistoryPointcut" />
+		<aop:pointcut
+			expression="execution(* org.tch.ste.vault.service.internal.batch.AbstractBatchFileProcessor.process(..))"
+			id="paymentInstrumentPreloadPointcut" />
+
+		<aop:pointcut
+			expression="execution(* org.tch.ste.vault.service.core.tokendeactivation.TokenDeactivationFacadeImpl.tokenDeactivation(..))"
+			id="paymentInstrumentDeactivationPointcut" />
+
+		<aop:pointcut
+			expression="execution(* org.tch.ste.vault.service.internal.batch.paymenttoken.PaymentTokenUsageServiceImpl.generateDetokenizationReport(..))"
+			id="paymentTokenUsagePointcut" />
+
+		<aop:pointcut
+			expression="execution(* org.tch.ste.vault.service.internal.token.TokenCreationFacadeImpl.createToken(..))"
+			id="tokenCreationPointcut" />
+		<aop:pointcut
+			expression="execution(* org.tch.ste.vault.service.core.paymentinstrument.PaymentInstrumentActivationFacadeImpl.activate(..))"
+			id="PaymentInstrumentActivationPointcut" />
+
+		<aop:pointcut
+			expression="execution(* org.tch.ste.vault.service.core.paymentinstrument.PaymentInstrumentDeactivationFacadeImpl.deactivateTokens(..))"
+			id="deactivatePaymentInstrumentsPointcut" />
+
+		<!-- Password Expiration Aspect -->
+		<aop:aspect id="passwordExpiryAspect" ref="passwordExpiryInjector">
+			<aop:around method="injectEntityManager" pointcut-ref="passwordExpiryPointcut" />
+		</aop:aspect>
+
+		<!-- Arn Generation Aspect -->
+		<aop:aspect id="arnGenerationaspect" ref="arnGenerationInjector">
+			<aop:around method="injectEntityManager" pointcut-ref="arnGenerationPointcut" />
+		</aop:aspect>
+
+		<!-- Batch History -->
+		<aop:aspect id="batchHistoryAspect" ref="batchHistoryInjector">
+			<aop:around method="injectEntityManager" pointcut-ref="batchHistoryPointcut" />
+		</aop:aspect>
+
+		<!-- Payment Instrument Preload -->
+		<aop:aspect id="paymentInstrumentPreloadAspect" ref="paymentInstrumentPreloadInjector">
+			<aop:around method="injectEntityManager" pointcut-ref="paymentInstrumentPreloadPointcut" />
+		</aop:aspect>
+		<!-- Token Deactivation -->
+		<aop:aspect id="paymentInstrumentDeactivationAspect" ref="paymentInstrumentDeactivationInjector">
+			<aop:around method="injectEntityManager" pointcut-ref="paymentInstrumentDeactivationPointcut" />
+		</aop:aspect>
+
+		<!-- Payment Token Usage -->
+		<aop:aspect id="paymentTokenUsageAspect" ref="paymentTokenUsageInjector">
+			<aop:around method="injectEntityManager" pointcut-ref="paymentTokenUsagePointcut" />
+		</aop:aspect>
+
+		<aop:aspect id="tokenCreationAspect" ref="tokenCreationInjector">
+			<aop:around method="injectEntityManager" pointcut-ref="tokenCreationPointcut" />
+		</aop:aspect>
+		<aop:aspect id="PaymentInstrumentActivationAspect" ref="PaymentInstrumentActivationInjector">
+			<aop:around method="injectEntityManager" pointcut-ref="PaymentInstrumentActivationPointcut" />
+		</aop:aspect>
+
+		<aop:aspect id="deactivatePaymentInstrumentsAspect" ref="deactivatePaymentsInstrumentInjector">
+			<aop:around method="injectEntityManager" pointcut-ref="deactivatePaymentInstrumentsPointcut" />
+		</aop:aspect>
+
+	</aop:config>
+</beans>

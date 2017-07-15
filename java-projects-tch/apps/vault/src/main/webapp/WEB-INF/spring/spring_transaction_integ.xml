@@ -1,0 +1,45 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans	
+		http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		http://www.springframework.org/schema/tx 
+		http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+
+
+	<bean id="onlineTransactionManager" class="org.springframework.orm.jpa.JpaTransactionManager" >
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
+	</bean>
+	
+	<bean id="batchTransactionManager" class="org.tch.ste.infra.transaction.SteMivTransactionManager">
+		<constructor-arg>
+			<map>
+				<entry key="stePu_001">
+					<bean class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+						<constructor-arg ref="ds_001"></constructor-arg>
+					</bean>
+				</entry>
+				<entry key="stePu_002">
+					<bean class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+						<constructor-arg ref="ds_002"></constructor-arg>
+					</bean>
+				</entry>
+				<entry key="stePu_Common">
+					<bean class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+						<constructor-arg ref="ds_common"></constructor-arg>
+					</bean>
+				</entry>
+			</map>
+		</constructor-arg>
+		<constructor-arg value="stePu_Common">
+		</constructor-arg>
+	</bean>
+
+	<tx:annotation-driven transaction-manager="onlineTransactionManager" />
+	
+
+</beans>

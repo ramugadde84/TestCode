@@ -1,0 +1,35 @@
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans	
+		http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/util 
+		http://www.springframework.org/schema/util/spring-util.xsd">
+
+	<!-- Vault Configuration property entry -->
+	<util:properties id="vaultProperties" location="classpath:vaultConfiguration.properties"/>
+	
+	<bean id="vaultConfiguration" class="org.tch.ste.infra.configuration.VaultPropertiesImpl" lazy-init="false">
+		<constructor-arg ref="vaultProperties"></constructor-arg>
+		<constructor-arg>
+			<util:map>
+				<entry key="vaultLogLevel" value = "Log Level = "/>
+				<entry key="welcomeMessage" value = "Welcome message = "/>
+				<entry key="environment" value = "Environment Name = "/>
+			</util:map>
+		</constructor-arg>
+		<constructor-arg type="java.lang.String" value="Admin"/>
+	</bean>
+	
+	<bean id="defaultInjectorImpl" class="org.tch.ste.infra.repository.support.EntityManagerInjectorImpl">
+		<constructor-arg>
+			<util:map>
+				<entry key="123456" value="stePu_001"/>
+				<entry key="123556" value="stePu_002"/>
+				<entry key="123656" value="stePu_003"/>
+			</util:map>
+		</constructor-arg>
+	</bean>
+</beans>

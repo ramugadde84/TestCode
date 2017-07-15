@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+           http://www.springframework.org/schema/security
+           http://www.springframework.org/schema/security/spring-security.xsd">
+
+	<authentication-manager alias="authenticationManager">
+		<authentication-provider ref="daoAuthenticationProvider" />
+	</authentication-manager>
+
+	<beans:bean id="daoAuthenticationProvider"
+		class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+		<beans:property name="userDetailsService" ref="authUserDetailsService" />
+		<beans:property name="passwordEncoder" ref="shaPasswordEncoder" />
+		<beans:property name="saltSource" ref="steSaltSource"></beans:property>
+	</beans:bean>
+
+	<beans:bean id="shaPasswordEncoder"
+		class="org.springframework.security.authentication.encoding.ShaPasswordEncoder">
+		<beans:constructor-arg value="512"></beans:constructor-arg>
+	</beans:bean>
+
+	<beans:bean id="steSaltSource" class="org.tch.ste.auth.service.internal.authentication.SteAuthSaltSource"/>
+	
+	<beans:bean id="authUserDetailsService"
+		class="org.tch.ste.auth.service.internal.authentication.SteAuthUserDetailsServiceImpl" />
+
+</beans:beans>

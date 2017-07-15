@@ -1,0 +1,42 @@
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans	
+		http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/util 
+		http://www.springframework.org/schema/util/spring-util.xsd">
+
+	<!-- Vault Configuration property entry -->
+	<util:properties id="vaultProperties" location="classpath:vaultConfiguration.properties"/>
+	
+	<bean id="vaultConfiguration" class="org.tch.ste.infra.configuration.VaultPropertiesImpl" lazy-init="false">
+		<constructor-arg ref="vaultProperties"></constructor-arg>
+		<constructor-arg>
+			<util:map>
+				<entry key="cloudSwitchEndpoint" value = "Cloud Switch Endpoint = "/>
+				<entry key="cloudSwitchID" value = "Cloud Switch ID = "/>
+				<entry key="vaultSwitchID" value = "Vault Switch ID = "/>
+				<entry key="vaultSourceID" value = "Vault Source ID = "/>
+				<entry key="switchCloudID" value = "Switch Cloud ID = "/>
+				<entry key="batchfileRootDirectory" value = "Batch File Root Directory = "/>
+				<entry key="vaultLogLevel" value = "Log Level = "/>
+				<entry key="authenticationAppUrl" value= "root TCH-hosted auth app URL = "/>
+				<entry key="encryptionURL" value = "Encryption URL = "/>
+			</util:map>
+		</constructor-arg>
+		<constructor-arg type="java.lang.String" value="Vault"/>
+	</bean>
+	
+	<bean id="defaultInjectorImpl" class="org.tch.ste.infra.repository.support.EntityManagerInjectorImpl">
+		<constructor-arg>
+			<util:map>
+				<entry key="123456" value="stePu_001"/>
+				<entry key="123556" value="stePu_002"/>
+			</util:map>
+		</constructor-arg>
+	</bean>
+	
+	<bean class="org.tch.ste.infra.batch.service.reporthistory.ReportHistoryServiceImpl"/>
+</beans>	

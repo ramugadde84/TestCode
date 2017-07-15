@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm orm_2_0.xsd"
+	version="2.0">
+	<named-query name="getUserWithUserRoles">
+		<query>
+			select u from User u left outer join fetch u.userRoles where
+			u.id=:id
+		</query>
+	</named-query>
+
+	<named-query name="updateLoginTime">
+		<query>
+			update User u SET u.lastLoginTime=:loginTime where
+			u.userId=:userId
+		</query>
+	</named-query>
+
+	<named-query name="getUserByUserId">
+		<query>
+			select u from User u where u.userId=:userId
+		</query>
+	</named-query>
+
+	<named-query name="getRolesForUser">
+		<query>
+			select r from Role r join r.userRoles ur join ur.user u where
+			u.userId=:userId and u.active=1
+		</query>
+	</named-query>
+
+	<named-query name="getIssuersTokenRequestors">
+		<query>
+			select  i from IssuerConfiguration i 
+		</query>
+	</named-query>
+	<named-query name="getTokenRequestors">
+		<query>
+			select t from TokenRequestorConfiguration t where t.deleteFlag
+			= 'N' order by t.name
+		</query>
+	</named-query>
+	<named-query name="updateTokenRequestors">
+		<query>
+			update TokenRequestorConfiguration t set t.name=:name where
+			t.networkTokenRequestId=:networkId
+		</query>
+	</named-query>
+	<!--newly -->
+	<named-query name="getBinMapping">
+		<query>
+			select t from TokenBinMapping t
+		</query>
+	</named-query>
+	<named-query name="getListOfPanBins">
+		<query>
+			select p from PanBin p where exists(select i.bin from IisnBin i
+			where i.iisn=:iisn)
+		</query>
+	</named-query>
+	<named-query name="getIssuersByName">
+		<query>
+			select i from IssuerConfiguration i where i.issuerName=:name
+		</query>
+	</named-query>
+	<named-query name="getIssuersByIisn">
+		<query>
+			select i from IssuerConfiguration i where i.iisn=:iisn
+		</query>
+	</named-query>
+	<named-query name="getTokenRequestorByNetworkTrId">
+		<query>
+			select t from TokenRequestorConfiguration t where
+			t.networkTokenRequestId=:networkId
+		</query>
+	</named-query>
+	<named-query name="getTokenRequestorByName">
+		<query>
+			select t from TokenRequestorConfiguration t where t.name=:name
+		</query>
+	</named-query>
+	<named-query name="getAllUsers">
+		<query>
+			select distinct u from User u left outer join fetch u.userRoles ur left outer join fetch
+			ur.role where u.active=1 order by u.userId
+		</query>
+	</named-query>
+	<named-query name="getIssuerById">
+		<query>
+			select i from IssuerConfiguration i left outer join fetch
+			i.issuerTokenRequestors t
+			left outer join fetch t.tokenRequestorConfiguration where i.id=:id
+		</query>
+	</named-query>
+	<named-query name="deleteExistingIssuerTokenRequestors">
+		<query>
+			delete from IssuerTokenRequestors where
+			issuerConfiguration.id=:id
+		</query>
+	</named-query>
+	<named-query name="deleteIssuerTokenRequestors">
+		<query>
+			delete from IssuerTokenRequestors where
+			tokenRequestorConfiguration.id=:id
+		</query>
+	</named-query>
+	<named-query name="getBinFirstDigit">
+		<query>
+			select i from Network i where i.binFirstDigit=:firstDigit
+		</query>
+	</named-query>
+	<named-query name="getListOfBins">
+		<query>
+			select ib from IisnBin ib where ib.iisn=:iisn
+		</query>
+	</named-query>
+	<named-query name="getPanBins">
+		<query>
+			select pb from PanBin pb where pb.realBin=:iisnBin
+		</query>
+	</named-query>
+	<named-query name="getCustomerDtls">
+		<query>
+			select c from Customer c order by c.userName
+		</query>
+	</named-query>
+	<named-query name="getExistingBins">
+		<query>
+			select i from IisnBin i where i.bin=:bin
+		</query>
+	</named-query>
+	<named-query name="getExistingTokenBins">
+		<query>
+			select i from TokenBin i where i.tokenBin=:bin
+		</query>
+	</named-query>
+	<named-query name="getIssuersSortedByName">
+		<query>
+			select i from IssuerConfiguration i order by i.issuerName
+		</query>
+	</named-query>
+	<named-query name="deleteExistingUserRoles">
+		<query>
+			delete from UserRole where user.id=:id
+		</query>
+	</named-query>
+	<named-query name="getPanTokenBinMapping">
+		<query>
+			select tm from TokenBinMapping tm where tm.iisnBin.id=:id
+		</query>
+	</named-query>
+	<named-query name="getBinMappings">
+		<query>
+			select distinct t from TokenBinMapping t join fetch t.iisnBin join fetch t.tokenBin
+		</query>
+	</named-query>
+	<named-query name="getRolesByUserId">
+		<query>
+			select r from Role r join r.userRoles ur where ur.user.id=:id
+		</query>
+	</named-query>
+	<named-query name="getRolesByRoleIds">
+		<query>
+			select r from Role r where r.id in :id
+		</query>
+	</named-query>
+	<named-query name="getTokenBinsFrmMappings">
+		<query>
+			select t from TokenBinMapping t where t.iisnBin.bin=:bin
+		</query>
+	</named-query>
+	<named-query name="getTokenRequestorsById">
+		<query>
+			select t from TokenRequestorConfiguration t where t.id in (:ids)
+		</query>
+	</named-query>
+	<named-query name="deleteAllPermittedTokenRequestors">
+		<query>
+			delete from PermittedTokenRequestor
+		</query>
+	</named-query>
+</entity-mappings>

@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>TCH Wallet</title>
+    <link rel="stylesheet" href="../lib/jquery-mobile/tch.miv.auth.custom.css">
+    <link rel="stylesheet" href="../lib/jquery-mobile/jquery.mobile.icons.min.css">
+    <link rel="stylesheet" href="../lib/jquery-mobile/jquery.mobile.structure-1.4.2.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <script src="../lib/jquery/jquery-1.11.1.min.js"></script>
+    <script src="../lib/jquery-mobile/jquery.mobile-1.4.2.js"></script>
+    <script>
+        $( document ).on( "pagecreate", function() {
+        });
+    </script>
+</head>
+<body id="authApp">
+
+<div data-role="page" id="pageWallet">
+
+    <div data-role="header" data-position="static" class="wallet-app-background">
+        <div><h4>Mobile Banking App</h4></div>
+    </div><!-- /header -->
+
+    <div class="ui-content" role="main">
+
+        <div class="logo">
+            <img src="img/ftb-logo.png">
+            <!--<img src="img/boa-logo.gif">-->
+            <!--<img src="img/chase-logo.png">-->
+        </div>
+
+        <ul data-role="listview" data-inset="true">
+            <li>
+                <a href="#">
+                    <h2>Free Checking</h2>
+                    <p>Checking 2</p>
+                    <span class="ui-li-count">$ 2,204</span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <h2>Primary Savings</h2>
+                    <p>Savings 1</p>
+                    <span class="ui-li-count">$ 21,405</span>
+                </a>
+            </li>
+        </ul>
+
+        <br>
+        <h4 class="sectionTitle">Your Wallet Info</h4>
+        <p>
+            If you have been pre-registered for a Wallet account, Login here to add your credit cards to the wallet
+        </p>
+
+        <form id="frmWallet" style="text-align: center">
+            <div>
+                <a href="#pageLogin" data-role="button" data-inline="true"
+                   data-theme="e" data-mini="true" data-transition="pop">Maintain Cards in Wallet</a>
+            </div>
+        </form>
+
+    </div><!-- /content -->
+
+</div><!-- /page#pageWallet -->
+
+<div data-role="page" id="pageWallet2">
+
+    <div data-role="header" data-position="static" class="wallet-app-background">
+        <div><h4>Mobile Banking App</h4></div>
+    </div><!-- /header -->
+
+    <div class="ui-content" role="main">
+
+        <div class="logo">
+            <img src="img/ftb-logo.png">
+            <!--<img src="img/boa-logo.gif">-->
+            <!--<img src="img/chase-logo.png">-->
+        </div>
+
+        <h4 class="sectionTitle">Your Wallet Info</h4>
+
+        <ul data-role="listview" data-inset="true">
+            <li>
+                <a href="#">
+                    <h5>Account ending 2345</h5>
+                    <p>Credit Card</p>
+                    <span class="ui-li-count">$ 3,204</span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <h5>John's Master Card - 1536</h5>
+                    <p>Credit Card</p>
+                    <span class="ui-li-count">$ 1,405</span>
+                </a>
+            </li>
+        </ul>
+
+        <form id="frmWallet2" style="text-align: center">
+            <div>
+                <a href="#" data-role="button" data-inline="true"
+                   data-theme="e" data-mini="true" data-transition="pop">Pay at Store !</a>
+            </div>
+        </form>
+
+    </div><!-- /content -->
+
+</div><!-- /page#pageWallet -->
+
+<div data-role="page" id="pageLogin">
+
+    <!-- Use this class "test-background" to have a red background color that is to be used in QA mode -->
+    <!--<div data-role="header" data-position="static" class="test-background">-->
+    <div data-role="header" data-position="static">
+        <div><h4>LOGIN</h4></div>
+    </div><!-- /header -->
+
+    <div class="ui-content" role="main">
+
+        <div class="logo">
+            <img src="img/ftb-logo.png">
+            <!--<img src="img/boa-logo.gif">-->
+            <!--<img src="img/chase-logo.png">-->
+        </div>
+
+        <form id="frmLogin">
+            <div>
+                <label for="username">Username:</label>
+                <input type="text" name="username" id="username" value="" placeholder="Username" />
+            </div>
+
+            <div>
+                <label for="password">Password:</label>
+                <input type="password" name="password" id="password" value="" placeholder="Password" />
+            </div>
+
+            <div class="right">
+                <a href="#pageWallet"
+                   data-role="button" data-inline="true" data-mini="true"
+                   data-direction="reverse" data-transition="pop" >Cancel</a>
+                <a href="#pageSelectPi" data-role="button" data-inline="true"
+                   data-theme="e" data-mini="true" data-transition="slide">Login</a>
+            </div>
+        </form>
+
+    </div><!-- /content -->
+
+</div><!-- /page#pageLogin -->
+
+<div data-role="page" id="pageSelectPi">
+
+    <div data-role="header" data-position="static">
+        <div><h4>MANAGE ACCOUNTS IN WALLET</h4></div>
+    </div><!-- /header -->
+
+    <div class="ui-content" role="main">
+
+        <div class="logo">
+            <img src="img/ftb-logo.png">
+            <!--<img src="img/boa-logo.gif">-->
+            <!--<img src="img/chase-logo.png">-->
+        </div>
+
+        <form id="frmSelectPi">
+
+            <!--<ul data-role="accountsList" data-inset="true" data-theme="d">-->
+            <!--<li data-role="fieldcontain">-->
+            <!--<select name="chk1" id="chk1" data-role="slider" data-mini="true">-->
+            <!--<option value="off"></option>-->
+            <!--<option value="on"></option>-->
+            <!--</select>-->
+            <!--<label for="chk1">Account ending 2345</label>-->
+            <!--</li>-->
+
+            <!--<li data-role="fieldcontain">-->
+            <!--<select name="chk1" id="chk1" data-role="slider" data-mini="true">-->
+            <!--<option value="off"></option>-->
+            <!--<option value="on"></option>-->
+            <!--</select>-->
+            <!--<label for="chk1">Account ending 2345</label>-->
+            <!--</li>-->
+
+
+            <!--</ul>-->
+
+            <!--<fieldset id="accountsList" data-theme="d">-->
+            <!--<div class="ui-grid-a">-->
+            <!--<div class="ui-block-a">-->
+            <!--<select name="chk1" id="chk1" data-role="slider" data-mini="true">-->
+            <!--<option value="off"></option>-->
+            <!--<option value="on"></option>-->
+            <!--</select>-->
+            <!--</div>-->
+
+            <!--<div class="ui-block-b">-->
+            <!--<label for="chk1">Account ending 2345</label>-->
+            <!--</div>-->
+            <!--</div>-->
+
+            <!--<div class="ui-grid-a">-->
+            <!--<div class="ui-block-a">-->
+            <!--<select name="chk1" id="chk2" data-role="slider" data-mini="true">-->
+            <!--<option value="off"></option>-->
+            <!--<option value="on"></option>-->
+            <!--</select>-->
+            <!--</div>-->
+
+            <!--<div class="ui-block-b">-->
+            <!--<label for="chk2">Account ending 2345</label>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--</fieldset>-->
+
+
+
+            <fieldset data-role="controlgroup" data-theme="d">
+                <input type="checkbox" name="chk1" id="chk1" class="custom" />
+                <label for="chk1">Account ending 2345</label>
+
+                <input type="checkbox" name="chk2" id="chk2" class="custom" />
+                <label for="chk2">Travel rewards card</label>
+
+                <input type="checkbox" name="chk3" id="chk3" class="custom" />
+                <label for="chk3">Account ending 8678</label>
+
+                <input type="checkbox" name="chk4" id="chk4" class="custom" />
+                <label for="chk4">John's Master Card - 4851</label>
+
+                <input type="checkbox" name="chk5" id="chk5" class="custom" />
+                <label for="chk5">John's Master Card - 1536</label>
+            </fieldset>
+
+            <div class="right">
+                <a href="#pageWallet"
+                   data-role="button" data-inline="true" data-mini="true"
+                   data-direction="reverse" data-transition="pop" >Cancel</a>
+                <a href="#myDialog" data-rel="popup"
+                   data-role="button" data-inline="true" data-theme="e" data-mini="true"
+                   data-position-to="window" data-transition="pop">Submit</a>
+            </div>
+
+        </form>
+    </div><!-- /content -->
+
+    <div data-role="popup" id="myDialog" data-dismissible="false" data-overlay-theme="b">
+        <div data-role="header">
+            <h4>Confirmation!</h4>
+        </div>
+        <div data-role="content">
+            <p>Are you sure that you want to update the selected accounts ?</p>
+            <div class="right">
+                <a href="#"
+                   data-role="button" data-inline="true" data-mini="true"
+                   data-rel="back">
+                    No
+                </a>
+                <a href="#pageWallet2"
+                   data-role="button" data-inline="true" data-mini="true"
+                   data-theme="e" data-direction="reverse" data-transition="pop" >
+                    Yes
+                </a>
+            </div>
+        </div>
+    </div>
+</div><!-- /page#pageSelectPi -->
+
+
+</body>
+</html>

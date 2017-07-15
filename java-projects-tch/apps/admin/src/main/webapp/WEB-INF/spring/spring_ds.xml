@@ -1,0 +1,138 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
+                           http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd">
+
+    
+
+	<bean id="baseDs" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" abstract="true"
+		p:driverClassName="${db.driver}" />
+
+    <bean id="ds_common" class="org.apache.commons.dbcp.BasicDataSource" parent="baseDs"
+        p:url="${db.url.common}"
+        p:username="${db.user.common}"
+        p:password="${db.password.common}" />
+
+	<bean id="ds_001" class="org.apache.commons.dbcp.BasicDataSource" parent="baseDs"
+        p:url="${db.url.001}"
+        p:username="${db.user.001}"
+        p:password="${db.password.001}" />
+		
+	<bean id="ds_002" class="org.apache.commons.dbcp.BasicDataSource" parent="baseDs"
+		p:url="${db.url.002}"
+        p:username="${db.user.002}"
+        p:password="${db.password.002}" />
+
+	<bean id="ds_003" class="org.apache.commons.dbcp.BasicDataSource" parent="baseDs"
+		p:url="${db.url.003}"
+        p:username="${db.user.003}"
+        p:password="${db.password.003}" />
+    <jdbc:initialize-database data-source="ds_common" ignore-failures="DROPS" >
+    	<jdbc:script location="classpath:sql/common/MIV_COMMON_DDL_DROP_SCRIPTS.sql"/>
+        <jdbc:script location="classpath:sql/common/MIV_COMMON_DDL_CREATE_SCRIPTS.sql"/>
+        <jdbc:script location="classpath:sql/common/insert.sql" />
+    </jdbc:initialize-database>
+
+	<jdbc:initialize-database data-source="ds_001" ignore-failures="DROPS" >
+		<jdbc:script location="classpath:sql/issuer/MIV_IISN_DDL_DROP_SCRIPTS.sql"/>
+		<jdbc:script location="classpath:sql/common/MIV_COMMON_DDL_DROP_SCRIPTS.sql"/>
+		<jdbc:script location="classpath:sql/common/MIV_COMMON_DDL_CREATE_SCRIPTS.sql"/>
+		<jdbc:script location="classpath:sql/issuer/MIV_IISN_DDL_CREATE_SCRIPTS.sql"/>
+		<jdbc:script location="classpath:sql/common/insert.sql" />
+		<jdbc:script location="classpath:sql/issuer/insert.sql" />
+		<jdbc:script location="classpath:sql/issuer/insert_001.sql" />
+	</jdbc:initialize-database>
+	
+	<jdbc:initialize-database data-source="ds_002" ignore-failures="DROPS" >
+		<jdbc:script location="classpath:sql/issuer/MIV_IISN_DDL_DROP_SCRIPTS.sql"/>
+		<jdbc:script location="classpath:sql/common/MIV_COMMON_DDL_DROP_SCRIPTS.sql"/>
+		<jdbc:script location="classpath:sql/common/MIV_COMMON_DDL_CREATE_SCRIPTS.sql"/>
+		<jdbc:script location="classpath:sql/issuer/MIV_IISN_DDL_CREATE_SCRIPTS.sql"/>
+		<jdbc:script location="classpath:sql/common/insert.sql" />
+		<jdbc:script location="classpath:sql/issuer/insert.sql" />
+		<jdbc:script location="classpath:sql/issuer/insert_002.sql" />
+	</jdbc:initialize-database>
+
+	<jdbc:initialize-database data-source="ds_003" ignore-failures="DROPS" >
+		<jdbc:script location="classpath:sql/issuer/MIV_IISN_DDL_DROP_SCRIPTS.sql"/>
+		<jdbc:script location="classpath:sql/common/MIV_COMMON_DDL_DROP_SCRIPTS.sql"/>
+		<jdbc:script location="classpath:sql/common/MIV_COMMON_DDL_CREATE_SCRIPTS.sql"/>
+		<jdbc:script location="classpath:sql/issuer/MIV_IISN_DDL_CREATE_SCRIPTS.sql"/>
+		<jdbc:script location="classpath:sql/common/insert.sql" />
+		<jdbc:script location="classpath:sql/issuer/insert.sql" />
+		<jdbc:script location="classpath:sql/issuer/insert_003.sql" />
+	</jdbc:initialize-database>
+
+	<bean id="entityManagerFactory" class="org.tch.ste.infra.repository.SteEntityManagerFactory">
+		<constructor-arg>
+			<map>
+                <entry key="stePu_Common">
+                    <bean
+                        class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
+                        p:dataSource-ref="ds_common" p:persistenceUnitName="steUnitCommon"
+                        parent="baseEntityManagerFactory" />
+                </entry>
+
+				<entry key="stePu_001">
+					<bean
+						class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
+						p:dataSource-ref="ds_001" p:persistenceUnitName="steUnit1"
+						parent="baseEntityManagerFactory" />
+				</entry>
+
+				<entry key="stePu_002">
+					<bean
+						class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
+						p:dataSource-ref="ds_002" p:persistenceUnitName="steUnit2"
+						parent="baseEntityManagerFactory" />
+				</entry>
+
+				<entry key="stePu_003">
+					<bean
+						class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
+						p:dataSource-ref="ds_003" p:persistenceUnitName="steUnit3"
+						parent="baseEntityManagerFactory" />
+				</entry>
+			</map>
+		</constructor-arg>
+		<constructor-arg value="stePu_Common" />
+	</bean>
+
+	<bean id="baseEntityManagerFactory"
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
+		abstract="true">
+
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />
+		</property>
+
+		<property name="jpaProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<prop key="hibernate.format_sql">true</prop>
+				<prop key="hibernate.show_sql">true</prop>
+			</props>
+		</property>
+
+		<property name="packagesToScan">
+			<list>
+				<value>org.tch.ste.domain.entity</value>
+				<value>org.tch.ste.admin.domain.entity</value>
+			</list>
+		</property>
+
+		<property name="mappingResources">
+			<list>
+				<value>META-INF/orm.xml</value>
+			</list>
+		</property>
+
+	</bean>
+
+	<!-- Post Processor -->
+	<bean id="postProcessor"
+		class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
+</beans>

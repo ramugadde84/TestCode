@@ -1,0 +1,75 @@
+
+
+h4 {
+    /*font-size: 90%;*/
+    text-align: center;
+}
+
+.logo {
+    text-align: center;
+    margin-bottom: 20px;
+}
+    .logo img {
+        max-width: 200px;
+    }
+
+
+#pageSelectPi .ui-controlgroup label {
+    /*font-size: 14px;*/
+    padding-left: 3.5em;
+}
+.ui-mobile label {
+    font-size: 14px;
+}
+
+.ui-header .ui-title{
+    margin: 0 0;
+}
+
+#authApp .ui-footer h6 {
+    font-size: 60%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.right {
+    text-align: right;
+}
+
+/* TODO: Change to data-theme */
+.test-background {
+    background-color: #ebccd1 !important;
+}
+
+/* Background for overlay. TODO: change to data-theme */
+.ui-popup-screen.in {
+    background-color: gray
+}
+
+
+/* Testing */
+
+.wallet-app-background {
+    background-color: #d9edf7 !important;
+}
+
+div.ui-slider-switch, .ui-field-contain div.ui-slider-switch {
+    width: 4.0em;
+}
+
+#accountsList .ui-block-a {
+    width: 55px;
+}
+
+#accountsList .ui-block-b {
+    padding-left: 10px;
+    padding-top: 12px;
+}
+
+.sectionTitle {
+    border-bottom: 1px solid #d3d3d3;
+}
+
+.ui-listview > li h5 {
+    font-size: 12px;
+}

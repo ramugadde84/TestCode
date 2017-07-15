@@ -1,0 +1,4 @@
+#org.springsource.ide.eclipse.gradle.core.preferences.GradleProjectPreferences
+#Mon Feb 23 22:21:46 IST 2015
+build.family.org.gradle.tooling.model.eclipse.HierarchicalEclipseProject=;apps;apps/admin;apps/auth;apps/vault;common;common/domain;common/infra;common/test;
+org.springsource.ide.eclipse.gradle.rootprojectloc=

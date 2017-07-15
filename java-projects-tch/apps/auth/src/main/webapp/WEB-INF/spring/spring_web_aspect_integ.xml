@@ -1,0 +1,26 @@
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans	
+		http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/aop 
+		http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <aop:aspectj-autoproxy />
+    <bean id="loginInjector" class="org.tch.ste.infra.repository.support.EntityManagerInjectorAspect">
+		<constructor-arg value="login" />
+		<constructor-arg value="iisn" />
+	</bean>
+	
+	<aop:config>
+		<aop:pointcut 
+			expression="execution(* org.tch.ste.auth.web.controller.login.LoginController.login(..))" 
+			id="loginPointcut"/>
+			
+		<aop:aspect id="loginAspect" ref="loginInjector">
+			<aop:around method="injectEntityManager" pointcut-ref="loginPointcut" />
+		</aop:aspect>
+	</aop:config>
+
+</beans>

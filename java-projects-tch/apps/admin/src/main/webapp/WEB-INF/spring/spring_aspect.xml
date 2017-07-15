@@ -1,0 +1,106 @@
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans	
+		http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/aop 
+		http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+	<aop:aspectj-autoproxy />
+
+	<bean id="binMappingInjector"
+		class="org.tch.ste.infra.repository.support.EntityManagerInjectorAspect">
+		<constructor-arg value="binMapping" />
+		<constructor-arg value="iisn" />
+	</bean>
+	
+	<bean id="binMappingValidationInjector"
+		class="org.tch.ste.infra.repository.support.EntityManagerInjectorAspect">
+		<constructor-arg value="target" />
+		<constructor-arg value="iisn" />
+	</bean>
+
+	<bean id="binMappingGetInjector"
+		class="org.tch.ste.infra.repository.support.EntityManagerInjectorAspect">
+		<constructor-arg value="iisn" />
+		<constructor-arg>
+			<null />
+		</constructor-arg>
+	</bean>
+
+	<bean id="tokenBinRuleInjector"
+		class="org.tch.ste.infra.repository.support.EntityManagerInjectorAspect">
+		<constructor-arg value="iisn" />
+		<constructor-arg>
+			<null />
+		</constructor-arg>
+	</bean>
+	
+	<bean id="tokenBinRuleInjector1"
+		class="org.tch.ste.infra.repository.support.EntityManagerInjectorAspect">
+		<constructor-arg value="iisn" />
+		<constructor-arg>
+			<null />
+		</constructor-arg>
+	</bean>
+	<bean id="customerManagementInjector"
+		class="org.tch.ste.infra.repository.support.EntityManagerInjectorAspect">
+		<constructor-arg value="iisn" />
+		<constructor-arg>
+			<null />
+		</constructor-arg>
+	</bean>
+
+
+	<aop:config>
+		<aop:pointcut
+			expression="execution(* org.tch.ste.admin.web.controller.BinMappingController.saveBinMapping(..))"
+			id="binMappingPointcut" />
+		<aop:pointcut
+			expression="execution(* org.tch.ste.admin.web.controller.BinMappingController.getBinMapping(..))"
+			id="binMappingGetPointcut" />
+			
+		<aop:pointcut
+			expression="execution(* org.tch.ste.admin.web.controller.lib.BinMappingValidatorImpl.validate(..))"
+			id="binMappingValidationtPointcut" />
+		<aop:pointcut
+			expression="execution(* org.tch.ste.admin.web.controller.TokensRuleController.loadListOfTokenRules(..))"
+			id="tokenRulePointcut" />
+		<aop:pointcut
+			expression="execution(* org.tch.ste.admin.web.controller.TokensRuleController.saveTokenRules(..))"
+			id="tokenRulePointcut1" />
+		
+		<aop:pointcut
+			expression="execution(* org.tch.ste.admin.web.controller.CustomerManagementController.*(..))"
+			id="customerManagementPointcut" />
+
+		<!-- For Bin Mapping -->
+		<aop:aspect id="binMappingAspect" ref="binMappingInjector">
+			<aop:around method="injectEntityManager" pointcut-ref="binMappingPointcut" />
+		</aop:aspect>
+
+		<aop:aspect id="binMappingGetAspect" ref="binMappingGetInjector">
+			<aop:around method="injectEntityManager" pointcut-ref="binMappingGetPointcut" />
+		</aop:aspect>
+
+		<aop:aspect id="binMappingValidationAspect" ref="binMappingValidationInjector">
+			<aop:around method="injectEntityManager" pointcut-ref="binMappingValidationtPointcut" />
+		</aop:aspect>
+
+		<!-- For Token Rules -->
+		<aop:aspect id="tokenRulesAspect" ref="tokenBinRuleInjector">
+			<aop:around method="injectEntityManager" pointcut-ref="tokenRulePointcut" />
+		</aop:aspect>
+		
+		<aop:aspect id="tokenRulesAspect1" ref="tokenBinRuleInjector1">
+			<aop:around method="injectEntityManager" pointcut-ref="tokenRulePointcut1" />
+		</aop:aspect>
+	
+
+		<!-- For customer management -->
+		<aop:aspect id="customerManagementAspect" ref="customerManagementInjector">
+			<aop:around method="injectEntityManager" pointcut-ref="customerManagementPointcut" />
+		</aop:aspect>
+	</aop:config>
+</beans>

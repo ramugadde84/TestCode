@@ -1,0 +1,66 @@
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans	
+		http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/aop 
+		http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+	<aop:aspectj-autoproxy />
+	<!-- Aspect for Locked out users Injector -->
+	<bean id="lockedOutUsersInjector"
+		class="org.tch.ste.infra.repository.support.EntityManagerInjectorAspect">
+		<constructor-arg value="iisn" />
+		<constructor-arg>
+			<null />
+		</constructor-arg>
+	</bean>
+	<!-- Aspect for PaymentInstrument  -->
+	<bean id="paymentInstrumentInjector"
+		class="org.tch.ste.infra.repository.support.EntityManagerInjectorAspect">
+		<constructor-arg value="paymentInstrumentRequest" />
+		<constructor-arg value="iisn">
+		</constructor-arg>
+	</bean>
+	<!-- Aspect for Authentication Attempts  -->
+	<bean id="authAttemptsInjector"
+		class="org.tch.ste.infra.repository.support.EntityManagerInjectorAspect">
+		<constructor-arg value="iisn" />
+		<constructor-arg>
+			<null/>
+		</constructor-arg>
+	</bean>
+	
+	<!-- Define pointcuts. -->
+	<aop:config>
+
+		<!-- Point cut for Locked out users -->
+		<aop:pointcut
+			expression="execution(* org.tch.ste.auth.service.internal.lockoutuser.LockedOutUsersReportGenerationServiceImpl.generateLockoutUsersReport(..))"
+			id="lockedOutUsersPointCut" />
+		<!-- Point cut for Payment Instrument -->	
+		<aop:pointcut
+			expression="execution(* org.tch.ste.auth.service.internal.paymentinstrument.PaymentInstrumentServiceImpl.savePaymentInstrument(..))"
+			id="paymentInstrumentPointcut" />
+			<!-- Point cut for Authentication Attempts -->
+		<aop:pointcut
+			expression="execution(* org.tch.ste.auth.service.internal.authattempts.AuthAttemptsServiceImpl.generateAuthAttemptsReport(..))"
+			id="authAttemptsPointcut" />	
+			
+		<!-- Locked out users Aspect -->
+		<aop:aspect id="lockedOutUsersAspect" ref="lockedOutUsersInjector">
+			<aop:around method="injectEntityManager" pointcut-ref="lockedOutUsersPointCut" />
+		</aop:aspect>
+		<!-- Payment Instrument Aspect -->
+		<aop:aspect id="paymentInstrumentaspect" ref="paymentInstrumentInjector">
+			<aop:around method="injectEntityManager" pointcut-ref="paymentInstrumentPointcut" />
+		</aop:aspect>
+		<!-- Authentication Attempts Aspect -->
+		<aop:aspect id="authAttemptsaspect" ref="authAttemptsInjector">
+			<aop:around method="injectEntityManager" pointcut-ref="authAttemptsPointcut" />
+		</aop:aspect>
+	</aop:config>
+
+
+</beans>

@@ -1,0 +1,45 @@
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans	
+		http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/aop 
+		http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+	<aop:aspectj-autoproxy />
+
+	<bean id="binMappingsFetchInjector"
+		class="org.tch.ste.infra.repository.support.EntityManagerInjectorAspect">
+		<constructor-arg value="iisn" />
+		<constructor-arg>
+			<null />
+		</constructor-arg>
+	</bean>
+
+	<bean id="permittedTokenRequestorInjector"
+		class="org.tch.ste.infra.repository.support.EntityManagerInjectorAspect">
+		<constructor-arg value="iisn" />
+		<constructor-arg>
+			<null />
+		</constructor-arg>
+	</bean>
+
+	<aop:config>
+		<aop:pointcut
+			expression="execution(* org.tch.ste.admin.service.core.mapping.BinMappingServiceImpl.getBinMappings(..))"
+			id="binMappingsFetchPointcut" />
+		<aop:pointcut expression="execution(* org.tch.ste.admin.service.core.tokenrequestor.TokenRequestorFacade.savePermittedTokenRequestor(..))"
+			id="permittedTokenRequestorPointcut"/>
+		<!-- Issuer Mapping Aspect -->
+		<aop:aspect id="issuerMappingAspect" ref="binMappingsFetchInjector">
+			<aop:around method="injectEntityManager" pointcut-ref="binMappingsFetchPointcut" />
+		</aop:aspect>
+		<!-- Permitted Token Requestors -->
+		<aop:aspect id="permittedtTokenRequestorAspect" ref="permittedTokenRequestorInjector">
+			<aop:around method="injectEntityManager" pointcut-ref="permittedTokenRequestorPointcut" />
+		</aop:aspect>
+
+
+	</aop:config>
+</beans>
