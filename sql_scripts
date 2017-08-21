@@ -97,6 +97,10 @@ BEGIN
 	);
 
 END;
-
-
++++++++++++++++++
+SQL Indexes:
+++++++++++++++++++++++
+1)CREATE INDEX IDX_DPDM_DL_NAME ON xxx(column_name) INDEXTYPE IS CTXSYS.CONTEXT PARAMETERS ('SYNC ( ON COMMIT)');
+2)drop index IDX_DPDM_DL_NAME;
+3)alter INDEX IDX_DPDM_DL_NAME rebuild online;
         
