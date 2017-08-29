@@ -1,4 +1,5 @@
 1)Modal window is not closing when click close button why because page is reloading to handle this i used setTimeOut in java script
 2)When i am handling Boot Strap Data table to delete the record from Grid i sent value in Long format but in UI may be they will 
 add typeOf only for string
-3)
+3)I added @OneToMany(fetch = FetchType.LAZY, mappedBy = "rcafMasterEntity", cascade = CascadeType.ALL)
+but when am running in Jboss fuse i got lazy loading error when loading data to collections.I fixed this issue by adding the below snippet in persistence.xml[<property name="hibernate.enable_lazy_load_no_trans" value="true" />]
