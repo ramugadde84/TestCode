@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+if [ "$#" -ne 2 ]; then
+	  echo "Usage: <login_url> <rest_url>" >&2
+	    exit 1
+		fi
+echo "Clearing the previous rest response.."
+		rm rest_response.log
+echo "Cleared !"
+		loginurl=$1
+		#username=\"$2\"
+		#password=\"$3\"
+		resturl=$2
+
+echo "Login url : $loginurl"
+#echo "Username  : "$username""
+#echo "Password  : $password"
+echo "Rest url  : $resturl"
+#loginjson="'{\"username\":$username, \"password\":$password}'"
+#echo "Login json: $loginjson"
+echo "Initiating login..."
+#		curl -X POST -i -H "Content-type: application/json" -c cookies.txt -X POST $loginurl -d '
+#		    {
+#				        "username":$username,
+#						"password":$password
+#								        }
+#										        ' >rest_response.log
+
+#curl -X POST -i -H "Content-type: application/json" -c cookies.txt -X POST $loginurl -d $loginjson >rest_response.log
+curl -X POST -i -H "Content-type: application/json" -c cookies.txt -X POST $loginurl -d '{"username":"1523439", "password":"rmwb123"}' >rest_response.log
+wbtoken=`cat rest_response.log | grep wbToken | python -mjson.tool | grep wbToken | cut -d ":" -f2 | tr -d '"'`
+echo "WB Token : $wbtoken"
+echo "Logged in. Calling REST service $resturl now..."
+curl -v -X POST -H "Content-Type: application/json" -H "WB-TOKEN:$wbtoken" -H "SYSTEM-ID:3" $resturl
