@@ -3,3 +3,11 @@
 add typeOf only for string
 3)I added @OneToMany(fetch = FetchType.LAZY, mappedBy = "rcafMasterEntity", cascade = CascadeType.ALL)
 but when am running in Jboss fuse i got lazy loading error when loading data to collections.I fixed this issue by adding the below snippet in persistence.xml[<property name="hibernate.enable_lazy_load_no_trans" value="true" />]
+4.For Generation of Certificates use the below steps.
+Creating JKS file :
+/opt/jdk1.6.0_27/jre/bin/keytool -genkey -alias wb_cm_cert_1 -keyalg RSA -keypass abc12345 -storepass abc12345 -keystore dlt.jks
+
+Importing the certificate to the JKS file : 
+/opt/jdk1.6.0_27/jre/bin/keytool -import -v -trustcacerts -alias wb_cm_cert_main -file cm_cer_1.cer -keystore dlt.jks -keypass abc12345
+/opt/jdk1.6.0_27/jre/bin/keytool -import -v -trustcacerts -alias wb_cm_cert_root -file cm_cer_root.cer -keystore dlt.jks -keypass abc12345
+
