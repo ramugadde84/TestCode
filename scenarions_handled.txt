@@ -11,3 +11,14 @@ Importing the certificate to the JKS file :
 /opt/jdk1.6.0_27/jre/bin/keytool -import -v -trustcacerts -alias wb_cm_cert_main -file cm_cer_1.cer -keystore dlt.jks -keypass abc12345
 /opt/jdk1.6.0_27/jre/bin/keytool -import -v -trustcacerts -alias wb_cm_cert_root -file cm_cer_root.cer -keystore dlt.jks -keypass abc12345
 
+5)Importing directly certificate 
+cd /jboss/java/oracle/1.7/jre/lib/security
+
+/jboss/java/oracle/1.7/jre/bin/keytool -keystore cacerts -importcert -alias cm_cer_new_0 -file /jboss/fuse/appconfig/cert_cm_new/cm_cer_0.cer
+
+6)In one of the situation Sl4j gave error it is not mapped properly with the JDK version so i added in pom.xml for the older version as
+ <exclusion>
+          <groupId>org.slf4j</groupId>
+           <artifactId>slf4j-api</artifactId>
+</exclusion>
+
