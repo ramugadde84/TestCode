@@ -22,3 +22,5 @@ cd /jboss/java/oracle/1.7/jre/lib/security
            <artifactId>slf4j-api</artifactId>
 </exclusion>
 
+7)WHen we are moving xls and jar file to linux box no need dos2unix command[we faced problem in production and that job is failed in SCB production]
+
