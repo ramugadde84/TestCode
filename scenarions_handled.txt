@@ -29,3 +29,5 @@ cd /jboss/java/oracle/1.7/jre/lib/security
   System.setProperty("javax.net.ssl.trustStore", keyStoreLocation);
   System.setProperty("javax.net.ssl.keyStorePassword", keyStorePassword);
   System.setProperty("java.net.useSystemProxies", "true");
+
+9)mvn clean deploy -Dbuild.number=13 -Dmaven.test.skip=true -Dbuild.version=3.10.1
