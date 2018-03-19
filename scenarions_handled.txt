@@ -24,3 +24,8 @@ cd /jboss/java/oracle/1.7/jre/lib/security
 
 7)WHen we are moving xls and jar file to linux box no need dos2unix command[we faced problem in production and that job is failed in SCB production]
 
+8)To Include certificate from JKS we have to use the below Steps.
+  System.setProperty("sun.security.ssl.allowUnsafeRenegotiation", "true");
+  System.setProperty("javax.net.ssl.trustStore", keyStoreLocation);
+  System.setProperty("javax.net.ssl.keyStorePassword", keyStorePassword);
+  System.setProperty("java.net.useSystemProxies", "true");
