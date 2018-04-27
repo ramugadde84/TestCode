@@ -38,4 +38,22 @@ cd /jboss/java/oracle/1.7/jre/lib/security
 https://github.com/pajikos/java-examples
 
 
-1
+12)We faced one production issue one of the BigDecimal value when coming to UI  network the value is changing,so the issue is when coming to the network the value got  updated with nearer even value,to solve that problem i used BigDecmial To String Searializer and annotated 
+
+public class StringBigDecmialForStringSerializer extends JsonSerializer<String> {
+    @Override
+    public void serialize(String value, JsonGenerator jgen, SerializerProvider provider) throws IOException {
+        if (value != null) {
+            try {
+                BigDecimal dataValue = new BigDecimal(value);
+                dataValue = dataValue.setScale(2, BigDecimal.ROUND_HALF_UP);
+                jgen.writeString(dataValue.toString());
+            } catch (NumberFormatException e) {
+                jgen.writeString(value);
+            }
+        }
+    }
+
+}
+
+
