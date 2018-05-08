@@ -56,4 +56,9 @@ public class StringBigDecmialForStringSerializer extends JsonSerializer<String> 
 
 }
 
+13)Git Commands:
+ a) Branch switch in git:[[git checkout   -b release/3.11.5 remotes/origin/release/3.11.5]]
+ b) pull the branch:[[git pull -v --progress  "origin"]]
+ c) Push to the branch::[[git push --progress  "origin" release/3.11.5:release/3.11.5]]
+
 
