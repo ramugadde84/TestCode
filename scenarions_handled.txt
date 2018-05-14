@@ -34,6 +34,8 @@ cd /jboss/java/oracle/1.7/jre/lib/security
 
 10)Gunzip search command: zgrep -c "Server Error: 503 Service Unavailable" *.gz
 
+11) In JsonProperty if we use on the above of setter() the values we can read,if we won't use on getter the response json will go with variables.
+
 11)Moving file  from one location to another location with spring boot examples:
 https://github.com/pajikos/java-examples
 
