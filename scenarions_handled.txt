@@ -63,4 +63,17 @@ public class StringBigDecmialForStringSerializer extends JsonSerializer<String> 
  b) pull the branch:[[git pull -v --progress  "origin"]]
  c) Push to the branch::[[git push --progress  "origin" release/3.11.5:release/3.11.5]]
 
+14)Evo suite setup in 
+the below steps have to create in shell script
+export PATH=/a01/appl/jdk1.8.0_91/bin:$PATH
+
+export REPO_HOME=/home/fuseadm/.m2/repository
+
+
+class_path="/home/myhkrmwbrt/evosuite/aspectjrt-1.8.5.jar:/home/myhkrmwbrt/evosuite/org.apache.aries.blueprint.api-1.0.1.jar:/home/fuseadm/.m2/repository/com/scb/cic/wb-lib-commons/1.2.32/wb-lib-commons-1.2.32.jar:/home/fuseadm/.m2/repository/org/apache/commons/commons-collections4/4.1/commons-collections4-4.1.jar:/a01/appl/evosuite/cxf-rt-rs-client-3.0.4.redhat-621084.jar:/a01/appl/evosuite/cxf-rt-frontend-jaxrs-2.7.3.jar:/a01/appl/evosuite/cxf-rt-core-2.7.0.redhat-610379.jar:/a01/appl/evosuite/hibernate-core-4.2.20.Final.jar"
+echo "class path is ${class_path}"
+java -jar evosuite-1.0.6.jar -target wb-svc-rcaf-1.2.0-SNAPSHOT.jar -projectCP ${class_path}  -Dtest_naming_strategy=COVERAGE -Duse_separate_classloader=false > rcaf.out 2>&1 &
+
+
+
 
