@@ -75,5 +75,5 @@ echo "class path is ${class_path}"
 java -jar evosuite-1.0.6.jar -target wb-svc-rcaf-1.2.0-SNAPSHOT.jar -projectCP ${class_path}  -Dtest_naming_strategy=COVERAGE -Duse_separate_classloader=false > rcaf.out 2>&1 &
 
 
-
+15)ssh sysread@ipaddress
 
