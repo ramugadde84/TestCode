@@ -16,6 +16,8 @@ cd /jboss/java/oracle/1.7/jre/lib/security
 
 /jboss/java/oracle/1.7/jre/bin/keytool -keystore cacerts -importcert -alias cm_cer_new_0 -file /jboss/fuse/appconfig/cert_cm_new/cm_cer_0.cer
 
+Deleting the Certficate alias::: keytool -delete -noprompt -alias edmicmsuat -keystore /ramu/appl/jdk1.6.0_23/jre/lib/security/cacerts
+
 6)In one of the situation Sl4j gave error it is not mapped properly with the JDK version so i added in pom.xml for the older version as
  <exclusion>
           <groupId>org.slf4j</groupId>
