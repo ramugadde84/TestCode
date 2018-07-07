@@ -1,0 +1,29 @@
+1.) Install Creditmate Certificate using following steps.
+
+2 ) certificates are avilable in the below location in same fuse server
+10.23.208.14@ /home/sysread/cert_cm_new/
+
+3) copy the files to /jboss/fuse/appconfig/
+cp -r /home/sysread/cert_cm_new/ /jboss/fuse/appconfig/cert_cm_new/
+
+4 ) Execute the below mentioned Keytool command to install the certificate,if we follow the below Steps no need to use jks in our code.
+
+cd /jboss/java/oracle/1.7/jre/lib/security/
+
+/jboss/java/oracle/1.7/jre/bin/keytool -keystore cacerts -importcert -alias cm_cer_new_0 -file /jboss/fuse/appconfig/cert_cm_new/cm_cer_0.cer
+/jboss/java/oracle/1.7/jre/bin/keytool -keystore cacerts -importcert -alias cm_cer_new_1 -file /jboss/fuse/appconfig/cert_cm_new/cm_cer_1.cer
+/jboss/java/oracle/1.7/jre/bin/keytool -keystore cacerts -importcert -alias cm_cer_new_2 -file /jboss/fuse/appconfig/cert_cm_new/cm_cer_2.cer
+
+5)Creation of JKS file steps below
+Creating JKS file :
+/opt/jdk1.6.0_27/jre/bin/keytool -genkey -alias wb_cm_cert_1 -keyalg RSA -keypass abc12345 -storepass abc12345 -keystore dlt.jks
+
+Importing the certificate to the JKS file : 
+/opt/jdk1.6.0_27/jre/bin/keytool -import -v -trustcacerts -alias wb_cm_cert_main -file cm_cer_1.cer -keystore dlt.jks -keypass abc12345
+/opt/jdk1.6.0_27/jre/bin/keytool -import -v -trustcacerts -alias wb_cm_cert_root -file cm_cer_root.cer -keystore dlt.jks -keypass abc12345
+
+6)Listing of cerficates
+/opt/jdk1.6.0_27/jre/bin/keytool -list -v -keystore /opt/jdk1.6.0_27/jre/lib/security/cacerts >> /tmp/creditmatecerts.txt
+
+7)Deletion of ceritificates
+ /oat/appl/java/jdk1.6.0_27/jre/bin/keytool -delete -alias wb_cm_cert_main -keystore cacerts -storepass changeit
