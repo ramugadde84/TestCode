@@ -97,7 +97,7 @@ alter INDEX D_PS_USER_LNAME_IDX rebuild online;
 alter INDEX D_PS_USER_PSID_IDX rebuild online; 
 
 18)How to create a database link:
-CREATE DATABASE LINK "SCI_LINK02.HK.STANDARDCHARTERED.COM"
+CREATE DATABASE LINK "SCI_LINK02.HK.xxx.COM"
    CONNECT TO "ROCCOUSER" IDENTIFIED BY VALUES ':password'
    USING 'hostname:1522/servicename';
 
