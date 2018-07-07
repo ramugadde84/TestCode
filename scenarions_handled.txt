@@ -8,7 +8,7 @@ Creating JKS file :
 /opt/jdk1.6.0_27/jre/bin/keytool -genkey -alias wb_cm_cert_1 -keyalg RSA -keypass abc12345 -storepass abc12345 -keystore dlt.jks
 
 Importing the certificate to the JKS file : 
-/opt/jdk1.6.0_27/jre/bin/keytool -import -v -trustcacerts -alias wb_cm_cert_main -file cm_cer_1.cer -keystore dlt.jks -keypass abc12345
+{JAV_HOME}/bin/keytool /jre/bin/keytool -import -v -trustcacerts -alias wb_cm_cert_main -file cm_cer_1.cer -keystore dlt.jks -keypass abc12345
 /opt/jdk1.6.0_27/jre/bin/keytool -import -v -trustcacerts -alias wb_cm_cert_root -file cm_cer_root.cer -keystore dlt.jks -keypass abc12345
 
 5)Importing directly certificate 
