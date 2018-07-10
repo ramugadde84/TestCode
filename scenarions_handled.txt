@@ -102,3 +102,5 @@ CREATE DATABASE LINK "SCI_LINK02.HK.xxx.COM"
    USING 'hostname:1522/servicename';
 
 
+19)to Connect topic for different environments we have to do the below set up in tomcat
+-Dcom.webmethods.jms.clientIDSharing=true
