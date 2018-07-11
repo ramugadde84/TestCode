@@ -104,3 +104,11 @@ CREATE DATABASE LINK "SCI_LINK02.HK.xxx.COM"
 
 19)to Connect topic for different environments we have to do the below set up in tomcat
 -Dcom.webmethods.jms.clientIDSharing=true
+
+20)
+-Xms<size>        set initial Java heap size
+-Xmx<size>        set maximum Java heap size
+-Xss<size>        set java thread stack size
+
+java -Xms16m -Xmx64m ClassName
+
