@@ -112,3 +112,6 @@ CREATE DATABASE LINK "SCI_LINK02.HK.xxx.COM"
 
 java -Xms16m -Xmx64m ClassName
 
+21)Checking net stat whether connected:netstat -anlp | grep -a 10.20.239.89
+
+
