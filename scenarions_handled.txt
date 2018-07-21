@@ -114,4 +114,32 @@ java -Xms16m -Xmx64m ClassName
 
 21)Checking net stat whether connected:netstat -anlp | grep -a IPAddress
 
+22)Roles And Responsiblities::
+1. Technical Role
+•	I ensure teams follow the correct procedures, policies and documentation requirements across project phases 
+•	I use to guide the team through the development, testing and implementation stages and review the completed work effectively 
+•	Provide direction and technical expertise in design, development and systems integration 
+•	Use to make quick decisions and solve technical problems to provide an efficient environment for project implementation 
+•	Identify resource and equipment requirements, efficient capacity planning and manage software and hardware availability 
+•	I use to provide technical training to teams when required and serve as a technical mentor to team members 
+	Managing development team in full SDLC process for their delivery as per requirements.
+	Gathering Requirement Specification as per Clients feedback.
+	Undertaking the design & the development, and troubleshooting of the application.
+	Ensuring adherence to quality norms throughout the implementation process.
+	Participated and conducted peer reviews on code and quality standards.
+
+	2. Management Role
+
+	I use to communicate effectively with teams and clients 
+	Understand project requirements, coordinate with resources and direct the projects in the right direction in a timely manner 
+	I use to manage change and effectively pass on the information down the line to concerned teams for smoother execution 
+	Delegate and allocate responsibilities efficiently to manage projects end to end (Using Agile)
+	3. Leadership Role
+	Effectively lead teams and inspire others to achieve goals through innovation, quality and excellence 
+	Use to identify strengths and weaknesses of team members and suitably make changes if required 
+	Resource management  and use  to handle complex / sensitive issues 
+	Encourage team interaction, boost employee motivation and appreciate team contribution 
+Ability to match project tasks with opportunities for development so that employee potential is utilized to the maximum 
+
+
 
