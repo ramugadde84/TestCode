@@ -142,4 +142,26 @@ java -Xms16m -Xmx64m ClassName
 Ability to match project tasks with opportunities for development so that employee potential is utilized to the maximum 
 
 
+SQL query::
+
+If comma seperated values are there in that we have to check whether the values exsites or not for that we have to use the below query
+
+with t as (
+select ma.x_ref_id,dlm.x_leid,dlm.x_Scid,dlm.x_crm_id,dlm.x_sales_stage,
+x_scb_entity_mandate
+ from biz_dp_Deal_master dlm
+   inner join biz_dp_master ma
+   on dlm.id_obj_mstr = ma.id_obj
+   and dlm.x_txn_typ <> '0003'
+    and dlm.x_txn_id = ma.x_latest_txn_id
+    and x_scb_entity_mandate IS NOT NULL),
+  S AS (
+ select X_REF_ID, X_LEID, X_SCID, X_CRM_ID, X_SALES_STAGE,  
+ trim(regexp_substr(X_SCB_ENTITY_MANDATE, '[^,]+', 1, N))as  X_SCB_ENTITY_MANDATE FROM T, 
+ (SELECT LEVEL N FROM DUAL, (SELECT MAX(REGEXP_COUNT(x_scb_entity_mandate,',')) + 1 MCOMMA FROM T)
+ CONNECT BY LEVEL <=MCOMMA) CTR
+ WHERE CTR.N <= 1 + REGEXP_COUNT(x_scb_entity_mandate,','))
+  SELECT * FROM S 
+  WHERE X_SCB_ENTITY_MANDATE IN ('1121','1270','1271','1302','1303','1304','1327','1343');
+
 
