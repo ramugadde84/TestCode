@@ -163,5 +163,11 @@ x_scb_entity_mandate
  WHERE CTR.N <= 1 + REGEXP_COUNT(x_scb_entity_mandate,','))
   SELECT * FROM S 
   WHERE X_SCB_ENTITY_MANDATE IN ('1121','1270','1271','1302','1303','1304','1327','1343');
+  
+  21)Active MQ Purge:
+  
+container-connect broker01-wb-prd_cedd_gg_03 'activemqurge Main purge WB.DC.FILE.UPLOAD.Q'
+
+container-connect broker01-wb-prd_cedd_gg_03 'activemqurge Main purge WB.DC.FILE.UPLOAD.Q.DLQ'  
 
 
