@@ -171,3 +171,9 @@ container-connect broker01-wb-prd_cedd_gg_03 'activemqurge Main purge WB.DC.FILE
 container-connect broker01-wb-prd_cedd_gg_03 'activemqurge Main purge WB.DC.FILE.UPLOAD.Q.DLQ'  
 
 
+Git Commands:
+1)To Know the git branch version : git branch
+2)
+
+
+
