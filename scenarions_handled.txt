@@ -177,7 +177,7 @@ Git Commands:
 
 Split comma Sperated values::
 select regexp_substr('SMITH,ALLEN,WARD,JONES','[^,]+', 1, level) from dual
-  2  connect by regexp_substr('SMITH,ALLEN,WARD,JONES', '[^,]+', 1, level) is not null;
+connect by regexp_substr('SMITH,ALLEN,WARD,JONES', '[^,]+', 1, level) is not null;
 
 
 
