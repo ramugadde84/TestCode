@@ -1,0 +1,11 @@
+1)If the value is credit we have to do sum if it is debit we have to substract::::
+
+select ename,sum(
+         case 
+            when indi='C' then +amount
+            when indi ='d' then -amount
+            else 0
+         end) as balance
+from emp_cre_deb group by ename;
+
+
