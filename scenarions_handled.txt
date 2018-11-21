@@ -224,4 +224,79 @@ Creating NAV Bar in UI.
 https://medium.com/@beeman/tutorial-styling-angular-cli-v6-apps-with-bootstrap-8d4f8ea5adae
 
 
+###Logging Log back xml for production.
+<configuration debug="true">
+	<property file="${dc_activity_property_location}/dealactivity_resources_${env}.properties" />
+
+	<appender name="ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${DC_ACTIVITY_APP_LOG_FILE_NAME}</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- rollover daily -->
+			<fileNamePattern>${DC_ACTIVITY_APP_FILE_NAME_PATTERN}
+			</fileNamePattern>
+			<maxHistory>${DC_ACTIVITY_APP_LOG_MAX_HISTORY}</maxHistory>
+			<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<!-- or whenever the file size reaches 100MB -->
+				<maxFileSize>${DC_ACTIVITY_MAX_FILE_SIZE}</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+		<encoder>
+			<Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{35} - %msg %n</Pattern>
+		</encoder>
+	</appender>
+	<!-- logger for only except oracle-end -->
+
+	<!-- logger for oracle-start -->
+	<appender name="SQLLOGS" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${DC_ACTIVITY_SQL_LOG_FILE_NAME}</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- rollover daily -->
+			<fileNamePattern>${DC_ACTIVITY_SQL_FILE_NAME_PATTERN}
+			</fileNamePattern>
+			<maxHistory>${DC_ACTIVITY_APP_LOG_MAX_HISTORY}</maxHistory>
+			<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<!-- or whenever the file size reaches 100MB -->
+				<maxFileSize>${DC_ACTIVITY_MAX_FILE_SIZE}</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+		<encoder>
+			<Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{35} - %msg %n</Pattern>
+		</encoder>
+	</appender>
+	<!-- logger for oracle-end -->
+
+	<logger name="com.scb">
+		<level value="${DC_ACTIVITY_LOG_LEVEL}" />
+		<appender-ref ref="ROLLING" />
+	</logger>
+
+	<logger name="org.hibernate" additivity="false">
+		<level value="WARN" />
+		<appender-ref ref="SQLLOGS" />
+	</logger>
+
+	<logger name="httpclient.wire" additivity="false">
+		<level value="WARN" />
+		<appender-ref ref="ROLLING" />
+	</logger>
+
+	<logger name="net.sf.ehcache">
+		<level value="WARN" />
+		<appender-ref ref="ROLLING" />
+	</logger>
+
+	<logger name="org.apache">
+		<level value="WARN" />
+		<appender-ref ref="ROLLING" />
+	</logger>
+
+	<!-- Configure so that it outputs to both console and log file -->
+	<root level="${DC_ACTIVITY_LOG_LEVEL}">
+		<appender-ref ref="ROLLING" />
+	</root>
+
+</configuration>
+
+
+
 
