@@ -297,6 +297,12 @@ https://medium.com/@beeman/tutorial-styling-angular-cli-v6-apps-with-bootstrap-8
 
 </configuration>
 
+###properties::
+DC_ACTIVITY_APP_LOG_FILE_NAME=/sit/appl/cedd/log/DC/DC_Activity_App.log
+DC_ACTIVITY_APP_FILE_NAME_PATTERN=/sit/appl/cedd/log/DC/archive/DC_Activity_App-%d{yyyy-MM-dd}.%i.log
+DC_ACTIVITY_APP_LOG_MAX_HISTORY=20
+DC_ACTIVITY_MAX_FILE_SIZE=50MB
+
 
 
 
