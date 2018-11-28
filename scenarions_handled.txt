@@ -303,6 +303,7 @@ DC_ACTIVITY_APP_FILE_NAME_PATTERN=/sit/appl/cedd/log/DC/archive/DC_Activity_App-
 DC_ACTIVITY_APP_LOG_MAX_HISTORY=20
 DC_ACTIVITY_MAX_FILE_SIZE=50MB
 
-
+## Grant permissin in oracle.
+grant select on mv_user_dept to occss_dts_uat_04;
 
 
