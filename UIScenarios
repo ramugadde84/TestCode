@@ -1,1 +1,4 @@
+1) When we use List Box when we search a text in list box after we have to remove highlight when we closing the list box.
+2) When we use List Box when we search a text in list box after we have to remove the searched text when we closing the list box.
+3) Whenever we implement Text Area we have to implement Max size(1-2000) below of the text area.
 
