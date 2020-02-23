@@ -4,4 +4,6 @@
 4) If npm install will fails then we have to use the below commands
       npm cache clean --force
       npm install -g @angular/cli@latest
+5) The Focus trap is important for textfields.
+6) The End of the Text field name for forms
 
